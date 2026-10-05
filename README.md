@@ -2,12 +2,12 @@
 
 A small 2D target shooter for CPSC 386, covering the eight Weeks 1–6 requirements. Move around a tiled arena, shoot upward, hit the pink targets, and beat your saved record. Each target relocates within its own lane when hit. The run continues until you return to the menu.
 
-**Status: source scaffold ready for import. Not yet compiled or play-tested in Unity; no playable build has been produced.** This repository is an overlay for your existing Unity 6 LTS project, not a complete Hub-openable project yet. Its Editor helper creates real saved scenes, a prefab, art, input references, and a material inside Unity.
+**Status: source scaffold ready for import. Not yet compiled or play-tested in Unity; no playable build has been produced.** The repository retains the existing Unity project template (recorded editor version: `6000.6.4f1`) and adds the prototype source. The Editor helper creates real saved game scenes, a prefab, art, input references, and a material inside Unity. Check that the installed editor meets the instructor’s Unity 6 LTS requirement before submitting.
 
 ## Fast start
 
 1. Download this repository with **Code → Download ZIP** (or clone it).
-2. Copy its `Assets` contents into your existing Unity project's `Assets` folder. Keep your current `Packages` and `ProjectSettings`.
+2. If you already have this project open locally, copy the new `Assets` contents into it and keep your current `Packages` and `ProjectSettings`. Alternatively, open the downloaded full project through Unity Hub using its recorded editor version.
 3. In Unity's Package Manager, ensure **Input System**, **Unity UI (uGUI)**, and **2D Tilemap Editor** are installed. Use versions compatible with your installed Unity 6 LTS. Set **Active Input Handling** to **Input System Package (New)** and restart if prompted.
 4. Wait for compilation, then select **Tools → Neon Range → Assemble Prototype**.
 5. Check the Physics 2D collision pairs in [ASSEMBLY.md](ASSEMBLY.md), set Game view to 16:9, and press Play from `MainMenu`.
@@ -37,6 +37,6 @@ The helper leaves your existing scenes intact, creates its output in `Assets/Neo
 
 ## Repository handoff
 
-Once imported and tested, commit the **actual Unity project** here: `Assets` (including generated assets and every `.meta`), `Packages`, and `ProjectSettings`. Do not commit `Library`, `Temp`, or build output. Retain this repository's documentation and gitignore. Unity writes the correct editor version and package lockfile on your PC; those are deliberately not guessed in this overlay.
+Once imported and tested, commit the **actual Unity project** here: `Assets` (including generated assets and every `.meta`), `Packages`, and `ProjectSettings`. Do not commit `Library`, `Temp`, or build output. Retain this repository's documentation and gitignore. The existing editor version and package lockfile are preserved; commit any real package changes made during assembly.
 
 The GitHub source is not the Canvas playable-build submission. Export and test a separate build, zip its entire output folder, and submit the documentation with it.

@@ -55,7 +55,7 @@ Runtime settings use private SerializeField fields. Classes are in the NeonRange
 
 ## Verification record — complete before submission
 
-- Unity 6 LTS exact version: **Pending**
+- Repository editor version: **6000.6.4f1**; confirm installed version and instructor-required LTS compatibility before submission.
 - Build platform / archive filename: **Pending**
 - Eight requirement checks in TESTING.md: **Pending**
 - Editor normal-play Console errors: **Not yet checked**
