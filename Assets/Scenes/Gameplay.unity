@@ -1400,6 +1400,10 @@ MonoBehaviour:
   scoreManager: {fileID: 661317539}
   minimum: {x: -1.5, y: 0.8}
   maximum: {x: 1.5, y: 2.8}
+  stats: {fileID: 11400000, guid: 403a9b46884456a4c8552ca5f4b62ee5, type: 2}
+  damageKey: 41
+  damageAmount: 10
+  respawnDelay: 0.75
 --- !u!61 &841278514
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2092,6 +2096,10 @@ MonoBehaviour:
   scoreManager: {fileID: 661317539}
   minimum: {x: 2.5, y: 0.8}
   maximum: {x: 5.5, y: 2.8}
+  stats: {fileID: 11400000, guid: abdee7e41ff069a499019daeccddff76, type: 2}
+  damageKey: 41
+  damageAmount: 10
+  respawnDelay: 0.75
 --- !u!61 &1410438873
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2844,6 +2852,10 @@ MonoBehaviour:
   scoreManager: {fileID: 661317539}
   minimum: {x: -5.5, y: 0.8}
   maximum: {x: -2.5, y: 2.8}
+  stats: {fileID: 11400000, guid: 403a9b46884456a4c8552ca5f4b62ee5, type: 2}
+  damageKey: 41
+  damageAmount: 10
+  respawnDelay: 0.75
 --- !u!61 &2082508973
 BoxCollider2D:
   m_ObjectHideFlags: 0
