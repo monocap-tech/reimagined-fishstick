@@ -11,7 +11,7 @@ A small 2D target shooter for CPSC 386, covering the eight Weeks 1–6 requireme
 | Hold Space | Fire upward |
 | Escape | Pause / resume |
 | Pause → Quit to Menu | Return to MainMenu |
-| MainMenu → Quit Game | Exit desktop build; stop Play mode in Editor |
+| MainMenu → Quit Game | Exit desktop build |
 
 ## Contents
 
