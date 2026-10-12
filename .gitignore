@@ -112,3 +112,9 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Fontworks New Cinema A - proprietary font
+Assets/Fonts/FOT-NewCinemaAStd-D.otf
+Assets/Fonts/FOT-NewCinemaAStd-D.otf.meta
+Assets/Fonts/FOT-NewCinemaAStd-D SDF.asset
+Assets/Fonts/FOT-NewCinemaAStd-D SDF.asset.meta
