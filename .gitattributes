@@ -1,8 +1,0 @@
-* text=auto
-*.cs text eol=lf
-*.shader text eol=lf
-*.unity text eol=lf
-*.prefab text eol=lf
-*.asset text eol=lf
-*.inputactions text eol=lf
-*.png binary
