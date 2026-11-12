@@ -1,13 +1,16 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace RelayYard
 {
+    [RequireComponent(typeof(SceneLoader))]
     public sealed class SceneUI : MonoBehaviour
     {
         public enum ScreenMode { Menu, Game, Win }
         [SerializeField] private ScreenMode screenMode = ScreenMode.Menu;
         private LightsOutController controller;
+        private SceneLoader loader;
+
+        private void Awake() => loader = GetComponent<SceneLoader>();
 
         private void Start()
         {
@@ -29,7 +32,7 @@ namespace RelayYard
                     (controller.IsSolved ? " | GATE OPEN" : " | Step on plates; jump to skip");
                 GUI.Box(new Rect(12, 12, Mathf.Min(Screen.width - 135, 495), 54), status);
                 if (GUI.Button(new Rect(Screen.width - 115, 12, 103, 42), "Restart"))
-                    SceneManager.LoadScene("Game");
+                    loader.LoadScene("Game");
                 return;
             }
 

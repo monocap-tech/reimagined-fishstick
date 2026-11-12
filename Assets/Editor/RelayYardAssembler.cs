@@ -14,11 +14,11 @@ namespace RelayYard.EditorTools
     // WARNING: regenerating overwrites the three generated scenes.
     public static class RelayYardAssembler
     {
-        private const string Root = "Assets/RelayYardGenerated";
-        private const string SceneFolder = Root + "/Scenes";
-        private const string ArtFolder = Root + "/Art";
-        private const string DataFolder = Root + "/Data";
-        private const string AnimationFolder = Root + "/Animations";
+        private const string SceneFolder = "Assets/Scenes";
+        private const string ArtFolder = "Assets/Sprites";
+        private const string MaterialsFolder = "Assets/Materials";
+        private const string DataFolder = "Assets/Data";
+        private const string AnimationFolder = "Assets/Animations";
         private const string ControlsPath = "Assets/Input/RelayControls.inputactions";
 
         [MenuItem("Tools/Relay Yard/Audit Generated Project")]
@@ -72,8 +72,17 @@ namespace RelayYard.EditorTools
                 Debug.LogError("[Relay Yard Audit] Create Resources/RelayMixer.mixer with Music and SFX groups.");
                 errors++;
             }
+            foreach (string folder in new[] { "Scenes", "Scripts", "Sprites", "Audio",
+                "Materials", "Prefabs", "Data", "Input", "Animations", "Tiles", "Resources" })
+            {
+                if (!AssetDatabase.IsValidFolder("Assets/" + folder))
+                {
+                    Debug.LogError("[Relay Yard Audit] Missing standard Assets/" + folder + " folder.");
+                    errors++;
+                }
+            }
             if (errors == 0)
-                Debug.Log("[Relay Yard Audit] Asset/scene/mixer preflight passed. Play and standalone build still require testing.");
+                Debug.Log("[Relay Yard Audit] Asset/scene/mixer/folder preflight passed. Play and standalone build still require testing.");
             else
                 Debug.LogError("[Relay Yard Audit] " + errors + " setup issue(s) found.");
         }
@@ -86,7 +95,7 @@ namespace RelayYard.EditorTools
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             if (!EditorUtility.DisplayDialog("Regenerate Relay Yard",
-                "This replaces the generated MainMenu, Game, and Win scenes with the six-plate Lights Out puzzle. " +
+                "This replaces Assets/Scenes/MainMenu, Game, and Win with the six-plate Lights Out puzzle. " +
                 "Any manual edits to those scenes will be overwritten. Continue?", "Regenerate", "Cancel"))
                 return;
 
@@ -136,6 +145,11 @@ namespace RelayYard.EditorTools
             Directory.CreateDirectory(ArtFolder);
             Directory.CreateDirectory(DataFolder);
             Directory.CreateDirectory(AnimationFolder);
+            Directory.CreateDirectory(MaterialsFolder);
+            Directory.CreateDirectory("Assets/Prefabs");
+            Directory.CreateDirectory("Assets/Audio");
+            Directory.CreateDirectory("Assets/Tiles");
+            Directory.CreateDirectory("Assets/Resources");
         }
 
         private static int EnsureGroundLayer()
@@ -318,7 +332,9 @@ namespace RelayYard.EditorTools
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             CreateCamera(new Color(.06f, .10f, .18f));
             AddAudioDirector();
-            var ui = new GameObject("Main Menu UI").AddComponent<SceneUI>();
+            var menu = new GameObject("Main Menu UI");
+            menu.AddComponent<SceneLoader>();
+            var ui = menu.AddComponent<SceneUI>();
             ui.EditorConfigure(SceneUI.ScreenMode.Menu);
             EditorSceneManager.SaveScene(scene, SceneFolder + "/MainMenu.unity");
         }
@@ -328,7 +344,9 @@ namespace RelayYard.EditorTools
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             CreateCamera(new Color(.05f, .17f, .14f));
             AddAudioDirector();
-            var ui = new GameObject("Victory UI").AddComponent<SceneUI>();
+            var victory = new GameObject("Victory UI");
+            victory.AddComponent<SceneLoader>();
+            var ui = victory.AddComponent<SceneUI>();
             ui.EditorConfigure(SceneUI.ScreenMode.Win);
             EditorSceneManager.SaveScene(scene, SceneFolder + "/Win.unity");
         }
@@ -355,7 +373,7 @@ namespace RelayYard.EditorTools
 
         private static PhysicsMaterial2D CreateSlick()
         {
-            string path = ArtFolder + "/Slick.asset";
+            string path = MaterialsFolder + "/Slick.asset";
             var material = AssetDatabase.LoadAssetAtPath<PhysicsMaterial2D>(path);
             if (material == null)
             {
@@ -445,7 +463,7 @@ namespace RelayYard.EditorTools
             goal.sortingOrder = 2;
             var trigger = goal.gameObject.AddComponent<BoxCollider2D>();
             trigger.isTrigger = true;
-            goal.gameObject.AddComponent<ExitGoal>().EditorConfigure(gate);
+            goal.gameObject.AddComponent<SceneLoader>().EditorConfigureTrigger("Win", gate);
             return gate;
         }
 
@@ -503,7 +521,9 @@ namespace RelayYard.EditorTools
                 new Color(.75f, 1f, .63f));
             puzzle.EditorConfigure(plates, lamps, gate, winFx, signal);
 
-            var ui = new GameObject("Gameplay HUD").AddComponent<SceneUI>();
+            var hud = new GameObject("Gameplay HUD");
+            hud.AddComponent<SceneLoader>();
+            var ui = hud.AddComponent<SceneUI>();
             ui.EditorConfigure(SceneUI.ScreenMode.Game);
             EditorSceneManager.SaveScene(scene, SceneFolder + "/Game.unity");
         }

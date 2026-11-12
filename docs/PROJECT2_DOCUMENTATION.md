@@ -14,9 +14,9 @@ The design uses physical traversal to select puzzle inputs, event-driven state t
 
 ## Scenes and GameObjects
 
-- **MainMenu**: Main Camera / AudioListener, persistent AudioDirector instance, SceneUI menu/start and saved music-volume control.
-- **Game**: Player (Dynamic Rigidbody2D, BoxCollider2D with Slick friction=0, Ground Probe, Input Action asset; child Visual with Animator); Solid Floor (RelayGround layer); Pressure Plate 1..6 (trigger collider, SwitchStyle, ParticleSystem); Indicator Light 1..6; Lights Out Controller; Exit Gate (solid collider + proximity halo + upward movement); separate Goal Beyond Gate; Seeded Perlin Signal (LineRenderer); Completion Burst; SceneUI HUD.
-- **Win**: Main Camera / AudioListener, duplicate-guarded AudioDirector, SceneUI victory/replay.
+- **MainMenu**: Main Camera / AudioListener, persistent AudioDirector instance, SceneUI menu/start and SceneLoader component, saved music-volume control.
+- **Game**: Player (Dynamic Rigidbody2D, BoxCollider2D with Slick friction=0, Ground Probe, Input Action asset; child Visual with Animator); Solid Floor (RelayGround layer); Pressure Plate 1..6 (trigger collider, SwitchStyle, ParticleSystem); Indicator Light 1..6; Lights Out Controller; Exit Gate (solid collider + proximity halo + upward movement); separate Goal Beyond Gate with trigger-enabled SceneLoader; Seeded Perlin Signal (LineRenderer); Completion Burst; SceneUI HUD with SceneLoader.
+- **Win**: Main Camera / AudioListener, duplicate-guarded AudioDirector, SceneUI victory/replay and SceneLoader.
 
 ## Source script inventory
 
@@ -30,8 +30,9 @@ The design uses physical traversal to select puzzle inputs, event-driven state t
 - **AudioDirector.cs**: singleton/DontDestroyOnLoad sound, distinct generated SFX and looping music, AudioMixer Music/SFX groups, PlayerPrefs volume.
 - **JumpFeedback.cs**: StateMachineBehaviour triggers jump feedback upon Animator state entry.
 - **SeededSignal.cs**: deterministic Perlin noise plus sine-wave visualizer drawn by a LineRenderer. Inspector exposes seed/noiseScale/noiseStrength/amplitude/speed.
-- **SceneUI.cs**: menu/game/win HUD, restart, music-volume UI.
-- **RelayYardAssembler.cs**: Editor-only scene/data/Animator generator, and setup audit (not in player build).
+- **SceneUI.cs**: menu/game/win HUD, restart, music-volume UI; delegates scene transitions to SceneLoader.
+- **SceneLoader.cs**: course-style reusable scene transition component; UI loads named scenes and goal trigger loads Win only after the gate clears.
+- **RelayYardAssembler.cs**: Editor-only scene/data/Animator generator and setup audit using standard Assets/Scenes, Sprites, Materials, Data and Animations directories (not in player build).
 - **LightsOutPuzzleSelfTest.cs**: Editor-only known-solution and state-reachability checks.
 
 The prior prototype's RelayLedger/RelayController/RelayBeacon/RelayDefinition/SeededBackdrop remain legacy source files, not used in the new six-switch scene, until the final cleanup pass.
@@ -51,7 +52,7 @@ The prior prototype's RelayLedger/RelayController/RelayBeacon/RelayDefinition/Se
 
 - **Assignment 9**: Perlin noise seed/scale and scripted particle bursts, adapted to a 2D background trace and switch feedback rather than a cube terrain.
 - **Assignment 10**: event-driven switch puzzle and grounded jumping, adapted from permanent latches to reversible neighbor toggles and physically spaced plates.
-- **Lantern Dash midterm study guide**: zero-friction PhysicsMaterial2D, solid gate and separate goal concept, midterm-style player-near-door glow. The current Built-In version approximates proximity illumination with a sprite halo; it does NOT contain a URP/Lit shader/Point Light reproduction.
+- **Lantern Dash midterm study guide**: zero-friction PhysicsMaterial2D, solid gate and separate goal concept, reusable SceneLoader component and midterm-style player-near-door glow. The current Built-In version approximates proximity illumination with a sprite halo; it does NOT contain a URP/Lit shader/Point Light reproduction.
 - **Assignment 8**: actual keyframed animation states and smoothed Idle/Walk/Run blend, plus JumpFeedback StateMachineBehaviour.
 
 ## Dependencies, sources and disclosure
@@ -78,3 +79,7 @@ The prior prototype's RelayLedger/RelayController/RelayBeacon/RelayDefinition/Se
 - Submission date:
 
 The detailed rubric and syllabus use **November 13, 2026, 11:59 PM** as the operational deadline, with peer-review build posting.
+
+## Submission and source structure
+
+Preserve the class-style `Assets/Scenes`, `Scripts`, `Audio`, `Prefabs`, `Materials`, `Data`, `Tiles`, `Input`, `Sprites`, `Animations`, `Resources`, and `Editor` folders. The playable build archive, source link/archive, and individually reviewed report are separate deliverables. See `SUBMISSION.md`. The initial `Assets/RelayYardGenerated` folder is legacy, not the revised assembler's output target.

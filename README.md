@@ -26,12 +26,12 @@ A one-room 2D Lights Out puzzle-platformer. Walk across six **separated** pressu
 
 ## How to run
 
-Read **ASSEMBLY.md** and **TESTING.md**. In Unity after pulling this branch run **Tools > Relay Yard > Assemble Lights Out Room**. This overwrites the three generated scenes; commit manually generated scenes and all .meta files after successful testing.
+Read **ASSEMBLY.md**, **TESTING.md**, and **SUBMISSION.md**. In Unity after pulling this branch run **Tools > Relay Yard > Assemble Lights Out Room**. This overwrites the three generated scenes; commit manually generated scenes and all .meta files after successful testing.
 
 ## Source and submission
 
 Project 2 is on branch [cpsc386-project2-relay-yard](https://github.com/monocap-tech/reimagined-fishstick/tree/cpsc386-project2-relay-yard); Project 1 remains untouched on main.
 
-Submit (a) independently tested Windows/WebGL build ZIP, (b) completed source branch or source archive, and (c) your own completed DOCX/PDF technical documentation, with disclosures and credits. Post the same build for peer review.
+Submit (a) independently tested Windows/WebGL build ZIP, (b) completed source branch or source archive, and (c) your own completed DOCX/PDF technical documentation, with disclosures and credits. Keep the separate hand-in files in the structure described in SUBMISSION.md, and preserve standard course-style Assets folders. Post the same build for peer review.
 
 The detailed assignment and syllabus list **Friday, Nov 13, 2026, 11:59 PM** as the due date; use that rather than relying on the module's later overview date.

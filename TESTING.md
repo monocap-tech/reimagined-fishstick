@@ -18,8 +18,10 @@ These are **acceptance tests, not claims of a passing Unity run**. Run them in U
 | Pure C# | LightsOutBoard contains no Unity scene dependency; controller uses it | SOURCE-REVIEW ONLY |
 | Animator | Locomotion/Jump/Fall states; visible animated clips and Idle/Walk/Run 1D blend tree driven by script | NOT RUN |
 | Procedural | Seeded Perlin signal visible; altering seed or noiseScale changes the generated curve, puzzle remains fixed and beatable | NOT RUN |
-| Build | MainMenu/Game/Win in scene list, Windows/WebGL build launches OUTSIDE Unity, all game states tested | NOT RUN |
-| Repo | All generated assets, .meta files, Resources/RelayMixer.mixer and source committed | NOT RUN |
+| Scene switching | Dedicated SceneLoader is attached to Menu/Game/Win UI and goal; MainMenu → Game → Win → Game works and gate blocks early goal entry | NOT RUN |
+| Build | Assets/Scenes/MainMenu, Game, Win in build list, Windows/WebGL build launches OUTSIDE Unity, all game states tested | NOT RUN |
+| Repo | Standard Assets folders retained; all generated scenes, .meta files, Resources/RelayMixer.mixer and source committed | NOT RUN |
+| Submission folder | Build ZIP, source branch URL, PDF/DOCX are distinct deliverables per SUBMISSION.md | NOT RUN |
 | Docs | Individually reviewed DOCX/PDF with script inventory, scenes, design decisions, accurate AI/third-party disclosures | NOT RUN |
 | Canvas | Standalone ZIP, source link, documentation submitted; same build posted in Peer Review 2 | NOT RUN |
 

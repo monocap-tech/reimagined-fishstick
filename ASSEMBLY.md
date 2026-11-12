@@ -10,15 +10,15 @@
 ## Regenerate the NEW game, not the old three-relay prototype
 
 5. Stop Play mode. Use **Tools > Relay Yard > Assemble Lights Out Room**. The older menu name **Assemble Playable Prototype** is an alias for the same updated generator.
-6. Read the confirmation: this action **overwrites** Assets/RelayYardGenerated/Scenes/MainMenu.unity, Game.unity, and Win.unity, plus the generated Player.controller. Do not run it again after hand-editing those scenes unless you intend to replace them. The Editor opens MainMenu afterward.
+6. Read the confirmation: this action **overwrites** Assets/Scenes/MainMenu.unity, Game.unity, and Win.unity, plus Assets/Animations/Player.controller. Do not run it again after hand-editing those scenes unless you intend to replace them. The Editor opens MainMenu afterward.
 7. Generated Game contains:
    - Player root with zero-friction BoxCollider2D, Rigidbody2D, ground probe, Visual child with Animator, jump particle system.
    - One continuous solid ground floor, six *separated* pressure plates (each with trigger and sparks), six indicator lights.
    - LightsOutController; initial lights OFF OFF ON OFF ON OFF.
-   - Exit Gate as a **solid BoxCollider2D** with proximity halo, and a separate Goal Beyond Gate trigger.
+   - Exit Gate as a **solid BoxCollider2D** with proximity halo, and a separate Goal Beyond Gate with SceneLoader trigger (only active once gate clears).
    - Seeded Perlin Signal procedural visualizer, victory burst, AudioDirector, SceneUI.
    - CyanSwitch and GoldSwitch ScriptableObject assets, animated Idle/Walk/Run/Jump/Fall clips, 1D blend tree.
-   - Build Profiles scenes MainMenu (0), Game (1), Win (2).
+   - Build Profiles scenes Assets/Scenes/MainMenu (0), Game (1), Win (2); standard course folders under Assets.
 8. The generated scene is not yet committed by the GitHub changes: Unity creates the .unity, .asset, .anim, .png and .meta files locally. Check the Project window and save.
 
 ## REQUIRED AudioMixer (manual Unity task)
@@ -42,3 +42,7 @@
 
 20. After verification, commit ALL Unity-generated .unity, .asset, .anim, image assets, .meta files, Resources/RelayMixer.mixer and ProjectSettings files to the same branch. Retain required third-party/AI assistance documentation per syllabus; Editor utilities can be cleaned up after generated assets are stable but are not in the player build.
 21. Update docs/PROJECT2_DOCUMENTATION.md with truthful test results and your own design rationale, then export to DOCX/PDF. Submit tested ZIP, complete source, document and peer-review build.
+
+## Submission folder layout
+
+Read [SUBMISSION.md](SUBMISSION.md) for the required build ZIP, source link and documentation separation. The new assembler uses standard `Assets/Scenes`, `Assets/Sprites`, `Assets/Materials`, `Assets/Data`, `Assets/Animations`, `Assets/Audio`, `Assets/Prefabs`, `Assets/Tiles`, `Assets/Input`, `Assets/Resources` and `Assets/Scripts` folders; it does not use `Assets/RelayYardGenerated` anymore. Existing prototype assets there can be preserved until the replacement build passes.
