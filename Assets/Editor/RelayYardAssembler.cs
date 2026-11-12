@@ -10,7 +10,8 @@ using UnityEngine.SceneManagement;
 
 namespace RelayYard.EditorTools
 {
-    // One-click, reproducible starting scenes. Run once; later changes should be made in the Editor.
+    // This is a one-shot editor build tool, NOT the game's runtime procedural generator.
+    // WARNING: regenerating overwrites the three generated scenes.
     public static class RelayYardAssembler
     {
         private const string Root = "Assets/RelayYardGenerated";
@@ -20,97 +21,73 @@ namespace RelayYard.EditorTools
         private const string AnimationFolder = Root + "/Animations";
         private const string ControlsPath = "Assets/Input/RelayControls.inputactions";
 
-
         [MenuItem("Tools/Relay Yard/Audit Generated Project")]
         public static void AuditGeneratedProject()
         {
-            int failures = 0;
+            int errors = 0;
 #if !ENABLE_INPUT_SYSTEM
-            Debug.LogError("[Relay Yard Audit] Active Input Handling is not set to Input System Package (New) or Both.");
-            failures++;
+            Debug.LogError("[Relay Yard Audit] Enable the Input System package in Player settings.");
+            errors++;
 #endif
-            InputActionAsset input = AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
-            if (input == null || input.FindActionMap("Gameplay", false) == null)
+            var actions = AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
+            if (actions == null || actions.FindActionMap("Gameplay", false) == null)
             {
-                Debug.LogError("[Relay Yard Audit] Missing or invalid Gameplay Input Actions asset.");
-                failures++;
+                Debug.LogError("[Relay Yard Audit] Gameplay Input Actions not found.");
+                errors++;
             }
-
-            string[] sceneNames = { "MainMenu", "Game", "Win" };
-            foreach (string sceneName in sceneNames)
+            foreach (string name in new[] { "MainMenu", "Game", "Win" })
             {
-                string scenePath = SceneFolder + "/" + sceneName + ".unity";
-                if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+                string path = SceneFolder + "/" + name + ".unity";
+                if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
                 {
-                    Debug.LogError("[Relay Yard Audit] Missing scene: " + scenePath);
-                    failures++;
+                    Debug.LogError("[Relay Yard Audit] Missing scene " + path);
+                    errors++;
                 }
-
-                bool enabledForBuild = false;
-                foreach (EditorBuildSettingsScene entry in EditorBuildSettings.scenes)
+                bool enabled = false;
+                foreach (EditorBuildSettingsScene s in EditorBuildSettings.scenes)
+                    if (s.enabled && s.path == path) enabled = true;
+                if (!enabled)
                 {
-                    if (entry.enabled && entry.path == scenePath)
-                    {
-                        enabledForBuild = true;
-                        break;
-                    }
+                    Debug.LogError("[Relay Yard Audit] Scene not enabled for build: " + name);
+                    errors++;
                 }
-                if (!enabledForBuild)
-                {
-                    Debug.LogError("[Relay Yard Audit] Scene not enabled in Build Profiles: " + scenePath);
-                    failures++;
-                }
-            }
-
-            if (AssetDatabase.LoadAssetAtPath<Sprite>(ArtFolder + "/Square.png") == null)
-            {
-                Debug.LogError("[Relay Yard Audit] Missing generated square Sprite.");
-                failures++;
             }
             if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AnimationFolder + "/Player.controller") == null)
             {
-                Debug.LogError("[Relay Yard Audit] Missing generated Animator Controller.");
-                failures++;
+                Debug.LogError("[Relay Yard Audit] Missing Player.controller");
+                errors++;
             }
-            foreach (string dataName in new[] { "CyanRelay", "GoldRelay" })
+            foreach (string name in new[] { "CyanSwitch", "GoldSwitch" })
             {
-                if (AssetDatabase.LoadAssetAtPath<RelayDefinition>(DataFolder + "/" + dataName + ".asset") == null)
+                if (AssetDatabase.LoadAssetAtPath<SwitchStyle>(DataFolder + "/" + name + ".asset") == null)
                 {
-                    Debug.LogError("[Relay Yard Audit] Missing ScriptableObject: " + dataName);
-                    failures++;
+                    Debug.LogError("[Relay Yard Audit] Missing SwitchStyle asset " + name);
+                    errors++;
                 }
             }
-
             var mixer = Resources.Load<UnityEngine.Audio.AudioMixer>("RelayMixer");
-            if (mixer == null)
+            if (mixer == null || mixer.FindMatchingGroups("Music").Length == 0 ||
+                mixer.FindMatchingGroups("SFX").Length == 0)
             {
-                Debug.LogError("[Relay Yard Audit] Missing Assets/Resources/RelayMixer.mixer.");
-                failures++;
+                Debug.LogError("[Relay Yard Audit] Create Resources/RelayMixer.mixer with Music and SFX groups.");
+                errors++;
             }
+            if (errors == 0)
+                Debug.Log("[Relay Yard Audit] Asset/scene/mixer preflight passed. Play and standalone build still require testing.");
             else
-            {
-                if (mixer.FindMatchingGroups("Music").Length == 0)
-                {
-                    Debug.LogError("[Relay Yard Audit] RelayMixer needs a Music group.");
-                    failures++;
-                }
-                if (mixer.FindMatchingGroups("SFX").Length == 0)
-                {
-                    Debug.LogError("[Relay Yard Audit] RelayMixer needs an SFX group.");
-                    failures++;
-                }
-            }
-
-            if (failures == 0)
-                Debug.Log("[Relay Yard Audit] Asset and build-list preflight passed. Run gameplay and standalone build tests separately.");
-            else
-                Debug.LogError("[Relay Yard Audit] " + failures + " setup issue(s). Fix the errors listed above before building.");
+                Debug.LogError("[Relay Yard Audit] " + errors + " setup issue(s) found.");
         }
+
+        [MenuItem("Tools/Relay Yard/Assemble Lights Out Room")]
+        public static void AssembleLightsOut() => Assemble();
 
         [MenuItem("Tools/Relay Yard/Assemble Playable Prototype")]
         public static void Assemble()
         {
-            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            if (!EditorUtility.DisplayDialog("Regenerate Relay Yard",
+                "This replaces the generated MainMenu, Game, and Win scenes with the six-plate Lights Out puzzle. " +
+                "Any manual edits to those scenes will be overwritten. Continue?", "Regenerate", "Cancel"))
                 return;
 
             EnsureFolders();
@@ -118,42 +95,43 @@ namespace RelayYard.EditorTools
             InputActionAsset actions = AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
             if (actions == null)
             {
-                EditorUtility.DisplayDialog("Relay Yard", "Input Actions asset not imported. Install Input System package, let Unity compile, then retry.", "OK");
+                EditorUtility.DisplayDialog("Relay Yard",
+                    "Gameplay Input Actions are not imported. Check the Input System package.", "OK");
                 return;
             }
-
             int groundLayer = EnsureGroundLayer();
             Sprite square = BuildSquareSprite();
-            RelayDefinition blue = BuildRelayData("CyanRelay", "Cyan Power", new Color(0.12f, 0.89f, 0.85f));
-            RelayDefinition gold = BuildRelayData("GoldRelay", "Gold Power", new Color(1f, 0.79f, 0.22f));
-            RuntimeAnimatorController animations = BuildAnimator();
-            if (square == null || animations == null)
-                throw new InvalidOperationException("Generated Sprite or Animator asset is missing. Check the Console.");
+            SwitchStyle cyan = BuildStyle("CyanSwitch", "Cyan circuit",
+                new Color(0.13f, 0.24f, 0.33f), new Color(0.38f, 0.92f, 0.90f));
+            SwitchStyle gold = BuildStyle("GoldSwitch", "Gold circuit",
+                new Color(0.29f, 0.24f, 0.17f), new Color(1.0f, 0.77f, 0.32f));
+            RuntimeAnimatorController animator = BuildAnimator();
+            if (square == null || animator == null)
+                throw new InvalidOperationException("Square sprite or Animator creation failed.");
 
-            CreateMenuScene();
-            CreateGameplayScene(square, actions, animations, groundLayer, blue, gold);
-            CreateWinScene();
-
+            CreateMenu();
+            CreateGame(square, actions, animator, groundLayer, cyan, gold);
+            CreateWin();
             EditorBuildSettings.scenes = new[]
             {
                 new EditorBuildSettingsScene(SceneFolder + "/MainMenu.unity", true),
                 new EditorBuildSettingsScene(SceneFolder + "/Game.unity", true),
                 new EditorBuildSettingsScene(SceneFolder + "/Win.unity", true)
             };
-
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             EditorSceneManager.OpenScene(SceneFolder + "/MainMenu.unity");
             EditorUtility.DisplayDialog("Relay Yard",
-                "Scenes, input references, Animator, two ScriptableObjects, physics, particle effects and procedural backdrop are configured. NEXT: Create Resources/RelayMixer.mixer with Music and SFX groups. Then run Tools > Relay Yard > Audit Generated Project before testing.",
+                "Six separate pressure plates, six indicator lights, Lights Out logic, a sliding gate, " +
+                "a goal trigger, animation, particles, and a Perlin signal trace are generated. " +
+                "Create Resources/RelayMixer.mixer with Music and SFX groups, audit, and then PLAYTEST.",
                 "OK");
         }
 
         private static void EnsureFolders()
         {
-            Directory.CreateDirectory("Assets/Input");
-            Directory.CreateDirectory("Assets/Editor");
             Directory.CreateDirectory("Assets/Scripts");
+            Directory.CreateDirectory("Assets/Input");
             Directory.CreateDirectory(SceneFolder);
             Directory.CreateDirectory(ArtFolder);
             Directory.CreateDirectory(DataFolder);
@@ -166,7 +144,7 @@ namespace RelayYard.EditorTools
             if (existing >= 0) return existing;
             UnityEngine.Object[] settings = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
             if (settings.Length == 0)
-                throw new InvalidOperationException("ProjectSettings/TagManager.asset is required. Start from a standard Unity 6 2D project.");
+                throw new InvalidOperationException("Missing ProjectSettings/TagManager.asset");
             var serialized = new SerializedObject(settings[0]);
             SerializedProperty layers = serialized.FindProperty("layers");
             for (int i = 8; i < 32; i++)
@@ -177,7 +155,7 @@ namespace RelayYard.EditorTools
                 serialized.ApplyModifiedProperties();
                 return i;
             }
-            throw new InvalidOperationException("No free user layer for RelayGround.");
+            throw new InvalidOperationException("No free user layer.");
         }
 
         private static Sprite BuildSquareSprite()
@@ -194,8 +172,7 @@ namespace RelayYard.EditorTools
                 UnityEngine.Object.DestroyImmediate(texture);
                 AssetDatabase.ImportAsset(path);
             }
-
-            TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer != null &&
                 (importer.textureType != TextureImporterType.Sprite || importer.spritePixelsPerUnit != 16))
             {
@@ -204,25 +181,24 @@ namespace RelayYard.EditorTools
                 importer.filterMode = FilterMode.Point;
                 importer.SaveAndReimport();
             }
-
             return AssetDatabase.LoadAssetAtPath<Sprite>(path);
         }
 
-        private static RelayDefinition BuildRelayData(string filename, string title, Color color)
+        private static SwitchStyle BuildStyle(string filename, string label, Color off, Color on)
         {
             string path = DataFolder + "/" + filename + ".asset";
-            RelayDefinition data = AssetDatabase.LoadAssetAtPath<RelayDefinition>(path);
-            if (data == null)
+            SwitchStyle style = AssetDatabase.LoadAssetAtPath<SwitchStyle>(path);
+            if (style == null)
             {
-                data = ScriptableObject.CreateInstance<RelayDefinition>();
-                AssetDatabase.CreateAsset(data, path);
+                style = ScriptableObject.CreateInstance<SwitchStyle>();
+                AssetDatabase.CreateAsset(style, path);
             }
-            data.EditorConfigure(title, color);
-            EditorUtility.SetDirty(data);
-            return data;
+            style.EditorConfigure(label, off, on);
+            EditorUtility.SetDirty(style);
+            return style;
         }
 
-        private static AnimationClip BuildClip(string name, float scaleY)
+        private static AnimationClip BuildClip(string name, float[] times, float[] scaleX, float[] scaleY)
         {
             string path = AnimationFolder + "/" + name + ".anim";
             AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
@@ -233,49 +209,70 @@ namespace RelayYard.EditorTools
             }
             clip.frameRate = 30;
             clip.wrapMode = WrapMode.Loop;
+            var xs = new Keyframe[times.Length];
+            var ys = new Keyframe[times.Length];
+            for (int i = 0; i < times.Length; i++)
+            {
+                xs[i] = new Keyframe(times[i], scaleX[i]);
+                ys[i] = new Keyframe(times[i], scaleY[i]);
+            }
+            AnimationUtility.SetEditorCurve(clip,
+                EditorCurveBinding.FloatCurve("", typeof(Transform), "m_LocalScale.x"),
+                new AnimationCurve(xs));
             AnimationUtility.SetEditorCurve(clip,
                 EditorCurveBinding.FloatCurve("", typeof(Transform), "m_LocalScale.y"),
-                AnimationCurve.Constant(0, 0.3f, scaleY));
+                new AnimationCurve(ys));
             EditorUtility.SetDirty(clip);
             return clip;
         }
 
         private static AnimatorStateTransition Connect(AnimatorState from, AnimatorState to)
         {
-            AnimatorStateTransition transition = from.AddTransition(to);
-            transition.hasExitTime = false;
-            transition.hasFixedDuration = true;
-            transition.duration = 0.025f;
-            return transition;
+            var t = from.AddTransition(to);
+            t.hasExitTime = false;
+            t.hasFixedDuration = true;
+            t.duration = 0.06f;
+            return t;
         }
 
         private static RuntimeAnimatorController BuildAnimator()
         {
-            AnimationClip idle = BuildClip("Idle", 1.0f);
-            AnimationClip run = BuildClip("Run", 0.92f);
-            AnimationClip jump = BuildClip("Jump", 1.15f);
-            AnimationClip fall = BuildClip("Fall", 0.84f);
+            AnimationClip idle = BuildClip("Idle",
+                new[] { 0f, 0.35f, 0.70f }, new[] { .70f, .71f, .70f },
+                new[] { 1f, 1.035f, 1f });
+            AnimationClip walk = BuildClip("Walk",
+                new[] { 0f, .20f, .40f }, new[] { .70f, .73f, .70f },
+                new[] { 1f, .92f, 1f });
+            AnimationClip run = BuildClip("Run",
+                new[] { 0f, .10f, .20f }, new[] { .72f, .80f, .72f },
+                new[] { .94f, .86f, .94f });
+            AnimationClip jump = BuildClip("Jump",
+                new[] { 0f, .10f, .24f }, new[] { .76f, .65f, .70f },
+                new[] { .90f, 1.13f, 1.07f });
+            AnimationClip fall = BuildClip("Fall",
+                new[] { 0f, .12f, .24f }, new[] { .70f, .74f, .70f },
+                new[] { .95f, .91f, .95f });
 
             string path = AnimationFolder + "/Player.controller";
             if (AssetDatabase.LoadAssetAtPath<AnimatorController>(path) != null)
                 AssetDatabase.DeleteAsset(path);
-            AnimatorController controller = AnimatorController.CreateAnimatorControllerAtPath(path);
-            controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
-            controller.AddParameter("VerticalSpeed", AnimatorControllerParameterType.Float);
-            controller.AddParameter("Grounded", AnimatorControllerParameterType.Bool);
-            AnimatorStateMachine machine = controller.layers[0].stateMachine;
-
-            var locomotion = machine.AddState("Locomotion");
+            AnimatorController ac = AnimatorController.CreateAnimatorControllerAtPath(path);
+            ac.AddParameter("Speed", AnimatorControllerParameterType.Float);
+            ac.AddParameter("VerticalSpeed", AnimatorControllerParameterType.Float);
+            ac.AddParameter("Grounded", AnimatorControllerParameterType.Bool);
+            AnimatorStateMachine machine = ac.layers[0].stateMachine;
+            AnimatorState locomotion = machine.AddState("Locomotion");
             var blend = new BlendTree
             {
-                name = "IdleRunBlend",
+                name = "Idle Walk Run Blend",
                 blendType = BlendTreeType.Simple1D,
                 blendParameter = "Speed",
                 useAutomaticThresholds = false
             };
             blend.AddChild(idle, 0f);
+            blend.AddChild(walk, .5f);
             blend.AddChild(run, 1f);
-            AssetDatabase.AddObjectToAsset(blend, controller);
+            AssetDatabase.AddObjectToAsset(blend, ac);
             locomotion.motion = blend;
             machine.defaultState = locomotion;
 
@@ -284,35 +281,30 @@ namespace RelayYard.EditorTools
             jumpState.AddStateMachineBehaviour<JumpFeedback>();
             AnimatorState fallState = machine.AddState("Fall");
             fallState.motion = fall;
-
-            var locomotionJump = Connect(locomotion, jumpState);
-            locomotionJump.AddCondition(AnimatorConditionMode.IfNot, 0f, "Grounded");
-            locomotionJump.AddCondition(AnimatorConditionMode.Greater, 0.1f, "VerticalSpeed");
-
-            var locomotionFall = Connect(locomotion, fallState);
-            locomotionFall.AddCondition(AnimatorConditionMode.IfNot, 0f, "Grounded");
-            locomotionFall.AddCondition(AnimatorConditionMode.Less, -0.1f, "VerticalSpeed");
-
+            var intoJump = Connect(locomotion, jumpState);
+            intoJump.AddCondition(AnimatorConditionMode.IfNot, 0f, "Grounded");
+            intoJump.AddCondition(AnimatorConditionMode.Greater, 0.1f, "VerticalSpeed");
+            var intoFall = Connect(locomotion, fallState);
+            intoFall.AddCondition(AnimatorConditionMode.IfNot, 0f, "Grounded");
+            intoFall.AddCondition(AnimatorConditionMode.Less, -0.1f, "VerticalSpeed");
             var jumpFall = Connect(jumpState, fallState);
             jumpFall.AddCondition(AnimatorConditionMode.Less, -0.1f, "VerticalSpeed");
-
-            var fallGround = Connect(fallState, locomotion);
-            fallGround.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
-
-            EditorUtility.SetDirty(controller);
-            return controller;
+            var landed = Connect(fallState, locomotion);
+            landed.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
+            EditorUtility.SetDirty(ac);
+            return ac;
         }
 
-        private static void CreateCamera(Color color)
+        private static void CreateCamera(Color background)
         {
             var go = new GameObject("Main Camera");
             go.tag = "MainCamera";
-            go.transform.position = new Vector3(0, 0, -10);
-            Camera cam = go.AddComponent<Camera>();
-            cam.orthographic = true;
-            cam.orthographicSize = 4.5f;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = color;
+            go.transform.position = new Vector3(.55f, 0f, -10f);
+            var camera = go.AddComponent<Camera>();
+            camera.orthographic = true;
+            camera.orthographicSize = 5f;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = background;
             go.AddComponent<AudioListener>();
         }
 
@@ -321,144 +313,195 @@ namespace RelayYard.EditorTools
             new GameObject("Persistent Audio Director").AddComponent<AudioDirector>();
         }
 
-        private static void CreateMenuScene()
+        private static void CreateMenu()
         {
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            CreateCamera(new Color(0.07f, 0.1f, 0.2f));
+            CreateCamera(new Color(.06f, .10f, .18f));
             AddAudioDirector();
             var ui = new GameObject("Main Menu UI").AddComponent<SceneUI>();
             ui.EditorConfigure(SceneUI.ScreenMode.Menu);
             EditorSceneManager.SaveScene(scene, SceneFolder + "/MainMenu.unity");
         }
 
-        private static void CreateWinScene()
+        private static void CreateWin()
         {
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            CreateCamera(new Color(0.06f, 0.17f, 0.14f));
+            CreateCamera(new Color(.05f, .17f, .14f));
             AddAudioDirector();
             var ui = new GameObject("Victory UI").AddComponent<SceneUI>();
             ui.EditorConfigure(SceneUI.ScreenMode.Win);
             EditorSceneManager.SaveScene(scene, SceneFolder + "/Win.unity");
         }
 
-        private static SpriteRenderer MakeSprite(string label, Vector2 position, Vector2 scale,
-            Color color, Sprite square)
+        private static SpriteRenderer MakeSprite(string label, Vector2 position, Vector2 size,
+            Color color, Sprite sprite)
         {
             var go = new GameObject(label);
-            go.transform.position = position;
-            go.transform.localScale = new Vector3(scale.x, scale.y, 1);
+            go.transform.position = new Vector3(position.x, position.y, 0f);
+            go.transform.localScale = new Vector3(size.x, size.y, 1f);
             var renderer = go.AddComponent<SpriteRenderer>();
-            renderer.sprite = square;
+            renderer.sprite = sprite;
             renderer.color = color;
             return renderer;
         }
 
-        private static void SolidBlock(string label, Vector2 position, Vector2 size,
-            Color color, Sprite square, int groundLayer)
+        private static void CreateFloor(Sprite sprite, int layer)
         {
-            SpriteRenderer art = MakeSprite(label, position, size, color, square);
-            art.gameObject.layer = groundLayer;
+            var art = MakeSprite("Solid Floor", new Vector2(0f, -2.45f),
+                new Vector2(18f, .9f), new Color(.23f, .29f, .41f), sprite);
+            art.gameObject.layer = layer;
             art.gameObject.AddComponent<BoxCollider2D>();
+        }
+
+        private static PhysicsMaterial2D CreateSlick()
+        {
+            string path = ArtFolder + "/Slick.asset";
+            var material = AssetDatabase.LoadAssetAtPath<PhysicsMaterial2D>(path);
+            if (material == null)
+            {
+                material = new PhysicsMaterial2D("Slick");
+                AssetDatabase.CreateAsset(material, path);
+            }
+            material.friction = 0f;
+            material.bounciness = 0f;
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static ParticleSystem MakeBurst(Transform parent, string label, Color tint)
         {
             var go = new GameObject(label);
             go.transform.SetParent(parent, false);
-            var system = go.AddComponent<ParticleSystem>();
-            var main = system.main;
+            var ps = go.AddComponent<ParticleSystem>();
+            var main = ps.main;
             main.playOnAwake = false;
             main.loop = false;
-            main.duration = 0.48f;
-            main.startLifetime = 0.3f;
-            main.startSpeed = 1.8f;
-            main.startSize = 0.13f;
+            main.duration = .55f;
+            main.startLifetime = .45f;
+            main.startSpeed = 2.6f;
+            main.startSize = .13f;
             main.startColor = tint;
-            main.maxParticles = 40;
-            var emission = system.emission;
-            emission.rateOverTime = 0;
-            emission.SetBursts(new[] { new ParticleSystem.Burst(0.01f, 22) });
-            var shape = system.shape;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.maxParticles = 120;
+            var emission = ps.emission;
+            emission.rateOverTime = 0f;
+            emission.SetBursts(new ParticleSystem.Burst[0]);
+            var shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Circle;
-            shape.radius = 0.14f;
-            system.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            return system;
+            shape.radius = .14f;
+            var renderer = ps.GetComponent<ParticleSystemRenderer>();
+            renderer.sortingOrder = 10;
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            return ps;
         }
 
-        private static PlayerMotor CreatePlayer(Sprite square, InputActionAsset actions,
-            RuntimeAnimatorController controller, int groundLayer)
+        private static PlayerMotor CreatePlayer(Sprite sprite, InputActionAsset actions,
+            RuntimeAnimatorController animator, int groundLayer)
         {
             var player = new GameObject("Player");
-            player.transform.position = new Vector3(-7.4f, -1.4f, 0);
+            player.transform.position = new Vector3(-7.1f, -1.5f, 0f);
             var rb = player.AddComponent<Rigidbody2D>();
-            rb.gravityScale = 2.4f;
+            rb.gravityScale = 2.3f;
             rb.freezeRotation = true;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-            var collider = player.AddComponent<BoxCollider2D>();
-            collider.size = new Vector2(0.68f, 1f);
+            var body = player.AddComponent<BoxCollider2D>();
+            body.size = new Vector2(.68f, 1f);
+            body.sharedMaterial = CreateSlick();
 
-            var visual = MakeSprite("Visual", Vector2.zero, new Vector2(0.7f, 1f),
-                new Color(0.45f, 0.77f, 1f), square);
+            var visual = MakeSprite("Visual", Vector2.zero, new Vector2(.7f, 1f),
+                new Color(.52f, .84f, 1f), sprite);
             visual.transform.SetParent(player.transform, false);
             visual.transform.localPosition = Vector3.zero;
-            Animator anim = visual.gameObject.AddComponent<Animator>();
-            anim.runtimeAnimatorController = controller;
+            visual.sortingOrder = 7;
+            var characterAnimator = visual.gameObject.AddComponent<Animator>();
+            characterAnimator.runtimeAnimatorController = animator;
 
             var probe = new GameObject("Ground Probe").transform;
             probe.SetParent(player.transform, false);
-            probe.localPosition = new Vector3(0, -0.56f, 0);
+            probe.localPosition = new Vector3(0f, -.54f, 0f);
 
-            ParticleSystem fx = MakeBurst(player.transform, "Jump Dust", new Color(0.72f, 0.93f, 1f));
-            fx.transform.localPosition = new Vector3(0, -0.46f, 0);
-            PlayerMotor motor = player.AddComponent<PlayerMotor>();
-            motor.EditorConfigure(actions, probe, 1 << groundLayer, anim, fx);
+            ParticleSystem dust = MakeBurst(player.transform, "Jump Dust", new Color(.70f, .93f, 1f));
+            dust.transform.localPosition = new Vector3(0f, -.48f, 0f);
+            var motor = player.AddComponent<PlayerMotor>();
+            motor.EditorConfigure(actions, probe, 1 << groundLayer, characterAnimator, dust);
             return motor;
         }
 
-        private static RelayBeacon MakeRelay(string id, Vector2 position,
-            RelayDefinition data, RelayController controller, Sprite square)
+        private static ExitGate CreateGate(Sprite sprite, Transform player)
         {
-            SpriteRenderer art = MakeSprite(id, position, new Vector2(0.53f, 0.53f),
-                new Color(0.78f, 0.4f, 0.23f), square);
-            BoxCollider2D hitbox = art.gameObject.AddComponent<BoxCollider2D>();
-            hitbox.isTrigger = true;
-            ParticleSystem fx = MakeBurst(art.transform, "Activation Sparks", data.ActiveColor);
-            var beacon = art.gameObject.AddComponent<RelayBeacon>();
-            beacon.EditorConfigure(id, data, controller, art, fx);
-            return beacon;
+            var visual = MakeSprite("Exit Gate", new Vector2(7.2f, .45f),
+                new Vector2(.75f, 4.9f), new Color(.42f, .25f, .18f), sprite);
+            visual.sortingOrder = 4;
+            var collider = visual.gameObject.AddComponent<BoxCollider2D>();
+            collider.isTrigger = false;
+            var glow = MakeSprite("Gate Proximity Halo", new Vector2(7.2f, .45f),
+                new Vector2(1.4f, 5.3f), new Color(1f, .48f, .12f, .04f), sprite);
+            glow.sortingOrder = 1;
+            glow.transform.SetParent(visual.transform, true);
+            var gate = visual.gameObject.AddComponent<ExitGate>();
+            gate.EditorConfigure(visual, glow, player);
+            var goal = MakeSprite("Goal Beyond Gate", new Vector2(8.25f, -1.5f),
+                new Vector2(.6f, 1f), new Color(.25f, .88f, .79f, .35f), sprite);
+            goal.sortingOrder = 2;
+            var trigger = goal.gameObject.AddComponent<BoxCollider2D>();
+            trigger.isTrigger = true;
+            goal.gameObject.AddComponent<ExitGoal>().EditorConfigure(gate);
+            return gate;
         }
 
-        private static void CreateGameplayScene(Sprite square, InputActionAsset actions,
-            RuntimeAnimatorController animator, int groundLayer, RelayDefinition cyan, RelayDefinition gold)
+        private static PressurePlate CreatePlate(int i, float x, SwitchStyle style,
+            LightsOutController puzzle, Sprite sprite, out SpriteRenderer lamp)
+        {
+            var plate = MakeSprite("Pressure Plate " + (i + 1),
+                new Vector2(x, -1.96f), new Vector2(.56f, .14f),
+                style.OffColor, sprite);
+            plate.sortingOrder = 5;
+            var trigger = plate.gameObject.AddComponent<BoxCollider2D>();
+            trigger.isTrigger = true;
+            trigger.size = new Vector2(1f, 4f); // Thin sprite, taller foot-contact trigger
+            ParticleSystem fx = MakeBurst(plate.transform, "Toggle Sparks", style.OnColor);
+            var press = plate.gameObject.AddComponent<PressurePlate>();
+            press.EditorConfigure(i, puzzle, plate, style, fx);
+
+            var halo = MakeSprite("Indicator Halo " + (i + 1),
+                new Vector2(x, 1.42f), new Vector2(.74f, .74f),
+                new Color(.36f, .67f, .81f, .09f), sprite);
+            halo.sortingOrder = 1;
+            lamp = MakeSprite("Indicator Light " + (i + 1),
+                new Vector2(x, 1.42f), new Vector2(.48f, .48f),
+                style.OffColor, sprite);
+            lamp.sortingOrder = 6;
+            return press;
+        }
+
+        private static void CreateGame(Sprite sprite, InputActionAsset actions,
+            RuntimeAnimatorController animator, int groundLayer, SwitchStyle cyan, SwitchStyle gold)
         {
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            CreateCamera(new Color(0.045f, 0.075f, 0.15f));
+            CreateCamera(new Color(.045f, .073f, .13f));
             AddAudioDirector();
+            CreateFloor(sprite, groundLayer);
+            PlayerMotor player = CreatePlayer(sprite, actions, animator, groundLayer);
 
-            var backdrop = new GameObject("Procedural Starfield").AddComponent<SeededBackdrop>();
-            backdrop.EditorConfigure(square, 386);
+            var signal = new GameObject("Seeded Perlin Signal").AddComponent<SeededSignal>();
+            signal.transform.position = new Vector3(0f, 2.65f, 0f);
+            signal.EditorConfigure(386);
 
-            SolidBlock("Floor", new Vector2(0, -2.45f), new Vector2(18, 0.9f),
-                new Color(0.24f, 0.29f, 0.43f), square, groundLayer);
-            SolidBlock("Jump Platform", new Vector2(-1.3f, -0.78f), new Vector2(2.3f, 0.3f),
-                new Color(0.28f, 0.47f, 0.61f), square, groundLayer);
-            SolidBlock("Small Obstacle", new Vector2(1.9f, -1.65f), new Vector2(0.75f, 0.7f),
-                new Color(0.27f, 0.42f, 0.55f), square, groundLayer);
-
-            CreatePlayer(square, actions, animator, groundLayer);
-
-            RelayController controller = new GameObject("Puzzle Controller").AddComponent<RelayController>();
-            SpriteRenderer exitRenderer = MakeSprite("Exit Gate", new Vector2(7.25f, -1.30f),
-                new Vector2(0.7f, 1.4f), new Color(0.95f, 0.27f, 0.29f), square);
-            BoxCollider2D gateTrigger = exitRenderer.gameObject.AddComponent<BoxCollider2D>();
-            gateTrigger.isTrigger = true;
-            ExitGate gate = exitRenderer.gameObject.AddComponent<ExitGate>();
-            gate.EditorConfigure(exitRenderer);
-
-            RelayBeacon a = MakeRelay("Relay A", new Vector2(-4.1f, -1.42f), cyan, controller, square);
-            RelayBeacon b = MakeRelay("Relay B", new Vector2(-1.3f, 0.08f), gold, controller, square);
-            RelayBeacon c = MakeRelay("Relay C", new Vector2(3.9f, -1.42f), cyan, controller, square);
-            controller.EditorConfigure(new[] { a, b, c }, gate);
+            var gate = CreateGate(sprite, player.transform);
+            var puzzle = new GameObject("Lights Out Controller").AddComponent<LightsOutController>();
+            var plates = new PressurePlate[6];
+            var lamps = new SpriteRenderer[6];
+            for (int i = 0; i < 6; i++)
+            {
+                float x = -5.4f + i * 2.1f;
+                plates[i] = CreatePlate(i, x, i % 2 == 0 ? cyan : gold,
+                    puzzle, sprite, out lamps[i]);
+            }
+            var winFxRoot = new GameObject("Victory Sparks");
+            winFxRoot.transform.position = new Vector3(0f, 1.45f, 0f);
+            ParticleSystem winFx = MakeBurst(winFxRoot.transform, "Completion Burst",
+                new Color(.75f, 1f, .63f));
+            puzzle.EditorConfigure(plates, lamps, gate, winFx, signal);
 
             var ui = new GameObject("Gameplay HUD").AddComponent<SceneUI>();
             ui.EditorConfigure(SceneUI.ScreenMode.Game);
