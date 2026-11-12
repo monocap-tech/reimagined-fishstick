@@ -38,12 +38,24 @@ namespace RelayYard
 #endif
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        // An already-overlapping player must also be able to finish after
+        // the sixth plate unlocks the exit. OnTriggerEnter2D alone would miss
+        // that state change because no new boundary crossing occurs.
+        private bool goalTransitionStarted;
+
+        private void OnTriggerEnter2D(Collider2D other) => TryCompleteGoal(other);
+
+        private void OnTriggerStay2D(Collider2D other) => TryCompleteGoal(other);
+
+        private void TryCompleteGoal(Collider2D other)
         {
-            if (!loadOnPlayerTrigger || other.GetComponent<PlayerMotor>() == null)
+            if (goalTransitionStarted || !loadOnPlayerTrigger ||
+                other.GetComponent<PlayerMotor>() == null)
                 return;
             if (gateRequiredOpen != null && !gateRequiredOpen.IsOpen)
                 return;
+
+            goalTransitionStarted = true;
             if (triggerScene == "Win" && RelayRunClock.Active != null)
                 RelayRunClock.Active.CompleteAtGoal();
             LoadScene(triggerScene);
