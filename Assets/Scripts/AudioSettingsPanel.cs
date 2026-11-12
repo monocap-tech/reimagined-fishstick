@@ -20,7 +20,11 @@ namespace RelayYard
 
         public void Open()
         {
-            if (overlay != null) overlay.SetActive(true);
+            if (overlay != null)
+            {
+                overlay.transform.SetAsLastSibling(); // Audio always covers underlying menu buttons.
+                overlay.SetActive(true);
+            }
             Refresh();
         }
 
