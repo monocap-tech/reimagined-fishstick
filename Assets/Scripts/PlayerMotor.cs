@@ -9,7 +9,7 @@ namespace RelayYard
         [Header("Input System")]
         [SerializeField] private InputActionAsset controls;
         [SerializeField] private float runSpeed = 5.4f;
-        [SerializeField] private float jumpVelocity = 9.2f;
+        [SerializeField] private float jumpVelocity = 9.6f;
 
         [Header("Ground contact")]
         [SerializeField] private Transform groundProbe;
@@ -45,7 +45,9 @@ namespace RelayYard
 
             if (animator != null)
             {
-                animator.SetFloat("Speed", Mathf.Abs(moveInput));
+                float visualSpeed = Mathf.MoveTowards(animator.GetFloat("Speed"),
+                    Mathf.Abs(moveInput), Time.deltaTime * 4f);
+                animator.SetFloat("Speed", visualSpeed);
                 animator.SetFloat("VerticalSpeed", body.linearVelocity.y);
                 animator.SetBool("Grounded", IsGrounded());
             }
@@ -65,13 +67,10 @@ namespace RelayYard
                    Physics2D.OverlapCircle(groundProbe.position, probeRadius, groundMask) != null;
         }
 
-        // Called by JumpFeedback StateMachineBehaviour on animation state entry.
         public void OnJumpAnimationStarted()
         {
-            if (takeoffParticles != null)
-                takeoffParticles.Play();
-            if (AudioDirector.Instance != null)
-                AudioDirector.Instance.PlayJump();
+            if (takeoffParticles != null) takeoffParticles.Emit(12);
+            if (AudioDirector.Instance != null) AudioDirector.Instance.PlayJump();
         }
 
 #if UNITY_EDITOR
