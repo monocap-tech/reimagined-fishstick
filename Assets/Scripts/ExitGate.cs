@@ -16,12 +16,21 @@ namespace RelayYard
         private Vector3 closedPosition;
         private bool unlocked;
         [SerializeField] private bool use2DLighting;
-        public bool IsOpen => unlocked && Vector3.Distance(transform.position,
-            closedPosition + Vector3.up * liftDistance) < 0.04f;
+        // Exit eligibility changes the instant the sixth indicator becomes lit.
+        // The lifting animation is presentation, not an additional win condition.
+        public bool IsOpen => unlocked;
 
         private void Awake() => closedPosition = transform.position;
 
-        public void Unlock() => unlocked = true;
+        public void Unlock()
+        {
+            if (unlocked) return;
+            unlocked = true;
+            // Allow passage immediately instead of waiting for the visible gate
+            // to clear the doorway over several Update frames.
+            BoxCollider2D barrier = GetComponent<BoxCollider2D>();
+            if (barrier != null) barrier.enabled = false;
+        }
 
         private void Update()
         {
