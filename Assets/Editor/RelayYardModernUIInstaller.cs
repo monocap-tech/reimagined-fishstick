@@ -351,13 +351,13 @@ namespace RelayYard.EditorTools
             var card = Panel(overlay.transform, "Audio Settings",
                 Vector2.zero, new Vector2(665f, 480f), PanelColor);
             Label(card.transform, "Title", "AUDIO",
-                new Vector2(-255f, 176f), new Vector2(450f, 50f), 42,
+                new Vector2(-10f, 176f), new Vector2(620f, 50f), 42,
                 TextColor, TextAnchor.MiddleLeft);
             Label(card.transform, "Music", "MUSIC",
-                new Vector2(-245f, 95f), new Vector2(240f, 32f), 19,
+                new Vector2(-202f, 95f), new Vector2(240f, 32f), 19,
                 TextColor, TextAnchor.MiddleLeft);
             Label(card.transform, "SFX", "SOUND EFFECTS",
-                new Vector2(-245f, -4f), new Vector2(240f, 32f), 19,
+                new Vector2(-202f, -4f), new Vector2(240f, 32f), 19,
                 TextColor, TextAnchor.MiddleLeft);
 
             Slider music = MakeSlider(card.transform, "Music Slider",
@@ -399,12 +399,12 @@ namespace RelayYard.EditorTools
             Stretch(wash.rectTransform);
 
             Label(root, "Title", "RELAY YARD",
-                new Vector2(-325f, 150f), new Vector2(640f, 100f), 64,
+                new Vector2(-215f, 150f), new Vector2(600f, 100f), 64,
                 TextColor, TextAnchor.MiddleLeft);
             var accent = Panel(root, "Accent Line",
-                new Vector2(-515f, 83f), new Vector2(60f, 4f), Cyan, false);
+                new Vector2(-484f, 83f), new Vector2(60f, 4f), Cyan, false);
             Label(root, "Rule", "Stepping on a plate also toggles its neighbors.",
-                new Vector2(-287f, 40f), new Vector2(700f, 50f), 24,
+                new Vector2(-187f, 40f), new Vector2(655f, 50f), 24,
                 Dim, TextAnchor.MiddleLeft);
 
             MakeButton(root, "START", new Vector2(-334f, -59f),
