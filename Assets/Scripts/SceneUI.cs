@@ -12,7 +12,7 @@ namespace RelayYard
         private void Start()
         {
             if (screenMode == ScreenMode.Game)
-                controller = FindFirstObjectByType<RelayController>();
+                controller = FindAnyObjectByType<RelayController>();
         }
 
         private void OnGUI()
