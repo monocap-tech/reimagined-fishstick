@@ -48,7 +48,7 @@ namespace RelayYard
 
             if (GUI.Button(new Rect(left, top + 132, width, 44),
                 screenMode == ScreenMode.Menu ? "Start" : "Play again"))
-                SceneManager.LoadScene("Game");
+                loader.LoadScene("Game");
 
             AudioDirector audio = AudioDirector.Instance;
             if (audio != null)
