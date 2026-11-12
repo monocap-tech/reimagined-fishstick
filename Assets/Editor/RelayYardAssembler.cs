@@ -20,6 +20,89 @@ namespace RelayYard.EditorTools
         private const string AnimationFolder = Root + "/Animations";
         private const string ControlsPath = "Assets/Input/RelayControls.inputactions";
 
+
+        [MenuItem("Tools/Relay Yard/Audit Generated Project")]
+        public static void AuditGeneratedProject()
+        {
+            int failures = 0;
+            InputActionAsset input = AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
+            if (input == null || input.FindActionMap("Gameplay", false) == null)
+            {
+                Debug.LogError("[Relay Yard Audit] Missing or invalid Gameplay Input Actions asset.");
+                failures++;
+            }
+
+            string[] sceneNames = { "MainMenu", "Game", "Win" };
+            foreach (string sceneName in sceneNames)
+            {
+                string scenePath = SceneFolder + "/" + sceneName + ".unity";
+                if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+                {
+                    Debug.LogError("[Relay Yard Audit] Missing scene: " + scenePath);
+                    failures++;
+                }
+
+                bool enabledForBuild = false;
+                foreach (EditorBuildSettingsScene entry in EditorBuildSettings.scenes)
+                {
+                    if (entry.enabled && entry.path == scenePath)
+                    {
+                        enabledForBuild = true;
+                        break;
+                    }
+                }
+                if (!enabledForBuild)
+                {
+                    Debug.LogError("[Relay Yard Audit] Scene not enabled in Build Profiles: " + scenePath);
+                    failures++;
+                }
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<Sprite>(ArtFolder + "/Square.png") == null)
+            {
+                Debug.LogError("[Relay Yard Audit] Missing generated square Sprite.");
+                failures++;
+            }
+            if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AnimationFolder + "/Player.controller") == null)
+            {
+                Debug.LogError("[Relay Yard Audit] Missing generated Animator Controller.");
+                failures++;
+            }
+            foreach (string dataName in new[] { "CyanRelay", "GoldRelay" })
+            {
+                if (AssetDatabase.LoadAssetAtPath<RelayDefinition>(DataFolder + "/" + dataName + ".asset") == null)
+                {
+                    Debug.LogError("[Relay Yard Audit] Missing ScriptableObject: " + dataName);
+                    failures++;
+                }
+            }
+
+            var mixer = Resources.Load<UnityEngine.Audio.AudioMixer>("RelayMixer");
+            if (mixer == null)
+            {
+                Debug.LogError("[Relay Yard Audit] Missing Assets/Resources/RelayMixer.mixer.");
+                failures++;
+            }
+            else
+            {
+                if (mixer.FindMatchingGroups("Music").Length == 0)
+                {
+                    Debug.LogError("[Relay Yard Audit] RelayMixer needs a Music group.");
+                    failures++;
+                }
+                if (mixer.FindMatchingGroups("SFX").Length == 0)
+                {
+                    Debug.LogError("[Relay Yard Audit] RelayMixer needs an SFX group.");
+                    failures++;
+                }
+            }
+
+            if (failures == 0)
+                Debug.Log("[Relay Yard Audit] Asset and build-list preflight passed. Run gameplay and standalone build tests separately.");
+            else
+                Debug.LogError("[Relay Yard Audit] " + failures + " setup issue(s). Fix the errors listed above before building.");
+        }
+
         [MenuItem("Tools/Relay Yard/Assemble Playable Prototype")]
         public static void Assemble()
         {
@@ -40,6 +123,8 @@ namespace RelayYard.EditorTools
             RelayDefinition blue = BuildRelayData("CyanRelay", "Cyan Power", new Color(0.12f, 0.89f, 0.85f));
             RelayDefinition gold = BuildRelayData("GoldRelay", "Gold Power", new Color(1f, 0.79f, 0.22f));
             RuntimeAnimatorController animations = BuildAnimator();
+            if (square == null || animations == null)
+                throw new InvalidOperationException("Generated Sprite or Animator asset is missing. Check the Console.");
 
             CreateMenuScene();
             CreateGameplayScene(square, actions, animations, groundLayer, blue, gold);
@@ -56,7 +141,7 @@ namespace RelayYard.EditorTools
             AssetDatabase.Refresh();
             EditorSceneManager.OpenScene(SceneFolder + "/MainMenu.unity");
             EditorUtility.DisplayDialog("Relay Yard",
-                "Scenes, input references, Animator, two ScriptableObjects, physics, particle effects and procedural backdrop are configured. NEXT: Create Resources/RelayMixer.mixer with Music and SFX groups as documented, then test and export.",
+                "Scenes, input references, Animator, two ScriptableObjects, physics, particle effects and procedural backdrop are configured. NEXT: Create Resources/RelayMixer.mixer with Music and SFX groups. Then run Tools > Relay Yard > Audit Generated Project before testing.",
                 "OK");
         }
 
