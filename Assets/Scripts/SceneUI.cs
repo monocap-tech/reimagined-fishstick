@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RelayYard
 {
@@ -9,6 +10,9 @@ namespace RelayYard
         [SerializeField] private ScreenMode screenMode = ScreenMode.Menu;
         private LightsOutController controller;
         private SceneLoader loader;
+        [SerializeField] private bool useCanvasUI;
+        [SerializeField] private Text progressLabel;
+        [SerializeField] private Slider musicVolumeSlider;
 
         private void Awake() => loader = GetComponent<SceneLoader>();
 
@@ -16,10 +20,28 @@ namespace RelayYard
         {
             if (screenMode == ScreenMode.Game)
                 controller = FindAnyObjectByType<LightsOutController>();
+            if (musicVolumeSlider != null && AudioDirector.Instance != null)
+                musicVolumeSlider.SetValueWithoutNotify(AudioDirector.Instance.MusicVolume);
+        }
+
+        private void Update()
+        {
+            if (progressLabel == null) return;
+            string status = controller == null ? "Loading puzzle..." :
+                "LIGHTS " + controller.LitCount + " / " + controller.TotalCount +
+                (controller.IsSolved ? "   |   GATE OPEN" : "   |   STEP TO TOGGLE • JUMP TO SKIP");
+            if (progressLabel.text != status) progressLabel.text = status;
+        }
+
+        public void OnMusicVolumeChanged(float value)
+        {
+            if (AudioDirector.Instance != null)
+                AudioDirector.Instance.SetMusicVolume(value);
         }
 
         private void OnGUI()
         {
+            if (useCanvasUI) return;
             int width = 390;
             float left = Mathf.Max(20f, Screen.width * 0.5f - width * 0.5f);
             GUI.skin.label.fontSize = 18;
@@ -63,6 +85,13 @@ namespace RelayYard
 
 #if UNITY_EDITOR
         public void EditorConfigure(ScreenMode mode) => screenMode = mode;
+
+        public void EditorUseCanvasUI(Text label, Slider volume)
+        {
+            progressLabel = label;
+            musicVolumeSlider = volume;
+            useCanvasUI = true;
+        }
 #endif
     }
 }

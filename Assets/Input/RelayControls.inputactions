@@ -5,19 +5,82 @@
       "name": "Gameplay",
       "id": "33f0118d-c96b-4a7b-a301-3e9b774cb0ed",
       "actions": [
-        {"name":"Move","type":"Value","id":"3c229a9d-3d27-47e9-837b-5be348c08422","expectedControlType":"Axis"},
-        {"name":"Jump","type":"Button","id":"355f897d-9363-4e17-a10a-0ad69363326c","expectedControlType":"Button"}
+        {
+          "name": "Move",
+          "type": "Value",
+          "id": "3c229a9d-3d27-47e9-837b-5be348c08422",
+          "expectedControlType": "Axis"
+        },
+        {
+          "name": "Jump",
+          "type": "Button",
+          "id": "355f897d-9363-4e17-a10a-0ad69363326c",
+          "expectedControlType": "Button"
+        },
+        {
+          "name": "Pause",
+          "type": "Button",
+          "id": "7e173b4b-b314-4969-9c53-22ab48653194",
+          "expectedControlType": "Button"
+        }
       ],
       "bindings": [
-        {"name":"Keyboard Horizontal","id":"c08b7656-3a25-4bd7-bd46-0cf5e79c3e15","path":"1DAxis","action":"Move","isComposite":true},
-        {"name":"negative","id":"adae9c44-2c56-4d11-8c51-b3f31bbd6420","path":"<Keyboard>/a","action":"Move","isPartOfComposite":true},
-        {"name":"positive","id":"a74d2b2c-7f8f-4df4-83bf-529159d9a9cd","path":"<Keyboard>/d","action":"Move","isPartOfComposite":true},
-        {"name":"Arrow Horizontal","id":"75b598de-45d6-4c7a-b99c-161ddfb52a45","path":"1DAxis","action":"Move","isComposite":true},
-        {"name":"negative","id":"9c456e7c-c7bb-4086-b4f1-276d787bdc07","path":"<Keyboard>/leftArrow","action":"Move","isPartOfComposite":true},
-        {"name":"positive","id":"908b995b-5109-4d5b-b7a5-5f2f01911a67","path":"<Keyboard>/rightArrow","action":"Move","isPartOfComposite":true},
-        {"name":"","id":"9e8c905b-1445-4d0f-9e0c-f90df8fb56f9","path":"<Keyboard>/space","action":"Jump"}
+        {
+          "name": "Keyboard Horizontal",
+          "id": "c08b7656-3a25-4bd7-bd46-0cf5e79c3e15",
+          "path": "1DAxis",
+          "action": "Move",
+          "isComposite": true
+        },
+        {
+          "name": "negative",
+          "id": "adae9c44-2c56-4d11-8c51-b3f31bbd6420",
+          "path": "<Keyboard>/a",
+          "action": "Move",
+          "isPartOfComposite": true
+        },
+        {
+          "name": "positive",
+          "id": "a74d2b2c-7f8f-4df4-83bf-529159d9a9cd",
+          "path": "<Keyboard>/d",
+          "action": "Move",
+          "isPartOfComposite": true
+        },
+        {
+          "name": "Arrow Horizontal",
+          "id": "75b598de-45d6-4c7a-b99c-161ddfb52a45",
+          "path": "1DAxis",
+          "action": "Move",
+          "isComposite": true
+        },
+        {
+          "name": "negative",
+          "id": "9c456e7c-c7bb-4086-b4f1-276d787bdc07",
+          "path": "<Keyboard>/leftArrow",
+          "action": "Move",
+          "isPartOfComposite": true
+        },
+        {
+          "name": "positive",
+          "id": "908b995b-5109-4d5b-b7a5-5f2f01911a67",
+          "path": "<Keyboard>/rightArrow",
+          "action": "Move",
+          "isPartOfComposite": true
+        },
+        {
+          "name": "",
+          "id": "9e8c905b-1445-4d0f-9e0c-f90df8fb56f9",
+          "path": "<Keyboard>/space",
+          "action": "Jump"
+        },
+        {
+          "name": "",
+          "id": "42b93f61-fcf4-4f66-99aa-9248f5a3bef3",
+          "path": "<Keyboard>/escape",
+          "action": "Pause"
+        }
       ]
     }
   ],
-  "controlSchemes":[]
+  "controlSchemes": []
 }

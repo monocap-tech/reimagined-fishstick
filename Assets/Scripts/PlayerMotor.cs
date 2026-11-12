@@ -40,6 +40,12 @@ namespace RelayYard
 
         private void Update()
         {
+            if (Time.timeScale == 0f)
+            {
+                moveInput = 0f;
+                jumpQueued = false;
+                return;
+            }
             moveInput = move.ReadValue<float>();
             if (jump.WasPressedThisFrame()) jumpQueued = true;
 

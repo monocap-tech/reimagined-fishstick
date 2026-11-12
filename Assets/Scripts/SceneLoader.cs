@@ -20,12 +20,23 @@ namespace RelayYard
                 Debug.LogError("[SceneLoader] Scene is missing from the active Build Profiles scene list: " + sceneName);
                 return;
             }
+            Time.timeScale = 1f; // Never carry a paused state into another scene.
             SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         }
 
         public void LoadGame() => LoadScene("Game");
         public void LoadMenu() => LoadScene("MainMenu");
         public void RestartGame() => LoadScene("Game");
+
+        public void QuitGame()
+        {
+            Time.timeScale = 1f;
+            PlayerPrefs.Save();
+            Application.Quit();
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
