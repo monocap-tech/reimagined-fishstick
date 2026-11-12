@@ -27,16 +27,10 @@ namespace RelayYard
             if (unlocked) return;
             unlocked = true;
 
-            // The level exit opens on the solved event itself: make collision,
-            // visuals, and goal eligibility agree in the same frame.
+            // The exit is eligible immediately, including when the player is
+            // already in the goal trigger. Let the visible gate rise normally.
             BoxCollider2D barrier = GetComponent<BoxCollider2D>();
             if (barrier != null) barrier.enabled = false;
-            transform.position = closedPosition + Vector3.up * liftDistance;
-
-            if (gateVisual != null)
-                gateVisual.color = use2DLighting
-                    ? new Color(0.34f, 0.78f, 0.59f)
-                    : new Color(0.28f, 0.9f, 0.65f);
         }
 
         private void Update()
