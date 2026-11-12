@@ -47,7 +47,7 @@
 ## Exit availability
 
 - The six-switch solve event immediately unlocks the exit and disables the blocking gate collider.
-- The gate continues its upward animation for visual feedback; the Win goal trigger accepts the player as soon as the solve event fires, rather than waiting for the gate to finish its lift.
+- The gate snaps fully clear of the doorway in the same frame as the solve event; the goal trigger accepts the player immediately, without waiting for a lift animation.
 - This does **not** auto-complete the game: the player must still reach the goal. The timer stops there, not on the sixth light.
 
 ## Timing contract
