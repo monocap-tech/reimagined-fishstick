@@ -15,6 +15,7 @@ namespace RelayYard
 
         private Vector3 closedPosition;
         private bool unlocked;
+        [SerializeField] private bool use2DLighting;
         public bool IsOpen => unlocked && Vector3.Distance(transform.position,
             closedPosition + Vector3.up * liftDistance) < 0.04f;
 
@@ -28,6 +29,18 @@ namespace RelayYard
             {
                 transform.position = Vector3.MoveTowards(transform.position,
                     closedPosition + Vector3.up * liftDistance, liftSpeed * Time.deltaTime);
+            }
+
+            // In the URP branch the real Light 2D is carried by the player.
+            // The gate's Sprite-Lit material receives light spatially; no fake
+            // distance-based tinting or rectangular halo is used.
+            if (use2DLighting)
+            {
+                if (gateVisual != null)
+                    gateVisual.color = unlocked
+                        ? new Color(0.34f, 0.78f, 0.59f)
+                        : new Color(0.57f, 0.46f, 0.36f);
+                return;
             }
 
             float proximity = player == null ? 0f :
@@ -51,6 +64,12 @@ namespace RelayYard
             gateVisual = main;
             halo = glow;
             player = target;
+        }
+
+        public void EditorEnableURP2DLighting()
+        {
+            use2DLighting = true;
+            if (halo != null) halo.gameObject.SetActive(false);
         }
 #endif
     }

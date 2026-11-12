@@ -26,7 +26,9 @@ namespace RelayYard
             line.widthMultiplier = 0.035f;
             line.numCornerVertices = 2;
             line.sortingOrder = -5;
-            Shader shader = Shader.Find("Sprites/Default");
+            // URP 2D draws the procedural trace with a compatible unlit shader.
+            Shader shader = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
+            if (shader == null) shader = Shader.Find("Sprites/Default");
             if (shader == null) shader = Shader.Find("Unlit/Color");
             if (shader != null)
                 line.material = new Material(shader);
