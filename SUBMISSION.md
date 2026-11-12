@@ -1,49 +1,30 @@
-# Project 2 submission layout
+# Relay Yard — Project 2 submission checklist
 
-The course requires THREE deliverables, not a single copy of the entire Unity editor project:
+Submit **three distinct deliverables** as required by the course instructions:
 
-1. **Playable Windows or WebGL build** packaged and tested outside the Unity Editor.
-2. **Source** as a working GitHub branch or separate source ZIP.
-3. **DOCX or PDF documentation**, describing scripts, scenes, objects, rubric mapping, external assets and assistance.
+1. **Playable build:** ZIP the complete tested Windows standalone build directory (the executable **and** its data/runtime files), or an accepted WebGL build if chosen.
+2. **Source:** GitHub release branch URL with the exact tested commit SHA, or a source ZIP containing `Assets/`, `Packages/`, `ProjectSettings/`, and all required Unity `.meta` files. Do not include `Library/`, `Temp/`, `obj/`, `.vs/`, or disposable build caches.
+3. **Documentation:** individually reviewed DOCX or PDF technical report covering mechanics/design, scripts, scenes, rubric mapping, testing, asset sources, and AI assistance.
 
-A clean local hand-in folder can look like:
+Proposed hand-in folder (local only; not committed to source Git):
 
 ```text
 Project2-Submission/
-  RelayYard-Windows.zip          <-- zip the entire tested Windows build folder
-  RelayYard-Documentation.pdf    <-- final, personally reviewed report
-  SOURCE.txt                     <-- URL of source branch and tested commit
+  RelayYard-Windows.zip
+  RelayYard-Documentation.pdf
+  SOURCE.txt
 ```
 
-Do **not** submit `Library/`, `Temp/`, `obj/`, or a bare standalone .exe without its accompanying data folder. Keep packaged builds out of source Git; `Build/` is ignored by .gitignore. If Canvas permits a source link, the GitHub branch is sufficient *after* the Unity-generated .unity/.meta/.anim/.asset and Resources/RelayMixer.mixer files have been committed.
+## Release preparation
 
-Keep the Unity asset structure aligned to the course midterm example:
+- [ ] Confirm the URP development checkpoint is preserved on `cpsc386-project2-urp-test`.
+- [ ] Open **`cpsc386-project2-release`** in Unity and allow a clean reimport.
+- [ ] Verify the current three scenes, their scripts, animations and shader assets are intact after removing generator scripts/unused prototype assets.
+- [ ] Verify any rubric requirement for an **AudioMixer**. `Assets/Resources/RelayMixer.mixer` is not currently present in this repository. If required, create it in Unity with groups exactly **Music** and **SFX**, verify runtime routing, then commit it and its `.meta` file.
+- [ ] Run full gameplay and audio regression tests, including hold R, pause, gate animation, goal trigger overlap and best-time persistence.
+- [ ] Build from the **release branch** with Build Profiles (MainMenu, Game, Win). Unzip to a separate folder and launch the player **outside Unity**.
+- [ ] Verify no missing references/Console errors, no development Editor utilities, and a clean source tree.
+- [ ] Finish the DOCX/PDF technical report, attach valid screenshots/testing record, include third-party attributions and **disclose ChatGPT assistance** in the manner required by the syllabus.
+- [ ] Prepare source URL and tested commit ID, then submit all three deliverables and any required peer-review copy.
 
-```text
-RelayYard/
-  Assets/
-    Scenes/           MainMenu.unity, Game.unity, Win.unity
-    Scripts/          PlayerMotor, SceneLoader, LightsOutBoard, ...
-    Input/            RelayControls.inputactions
-    Animations/       Player.controller and clips
-    Sprites/          Square.png
-    Materials/        Slick.asset (2D physics material)
-    Data/             CyanSwitch.asset, GoldSwitch.asset
-    Audio/            reserved for imported audio (original audio is code-generated)
-    Prefabs/          reserved for reusable scene objects
-    Tiles/            reserved for tiles and tilemaps
-    Resources/        RelayMixer.mixer (create manually)
-    Editor/           assembler, audit, and logic self-test tools
-  Packages/
-  ProjectSettings/
-```
-
-Note that a previously generated folder `Assets/RelayYardGenerated/` may remain from an earlier prototype on your workstation. The revised assembler writes to standard `Assets/Scenes`, `Assets/Sprites`, `Assets/Animations`, `Assets/Data` and `Assets/Materials`. Do not delete the old folder until you have confirmed that the new scenes are present, build correctly, and no active references depend on the old assets. Do not use `git clean` to handle generated Unity files.
-
-The source contains an independent `SceneLoader.cs`, analogous to the *Lantern Dash* study guide arrangement: the Menu/Game/Win UI components invoke its named scene load methods; the goal has a trigger-configured instance that loads Win only after the solid gate has lifted. `ExitGoal.cs` remains as a legacy script for now and is not attached by the updated assembler.
-
-Update `TESTING.md` after actual editor and standalone tests; the presence of the files and folder tree alone does not constitute a passing build. AI assistance must be disclosed in the final individually reviewed documentation, as required by the course syllabus.
-
-## Before producing the final source archive
-
-After running **Tools > Relay Yard > Upgrade UI In Existing Scenes** and testing, add the newly saved `Assets/Scenes/*.unity`, `Assets/SceneBackups` if desired, animation assets, ScriptableObjects, Materials, generated PNG, `RelayMixer.mixer`, and **all Unity `.meta` files** to the Project 2 branch. The remote branch currently holds primarily scripts and Editor tooling; it is not yet a complete self-contained source project. Verify no Unity local work is overwritten with a subsequent destructive rebuild.
+**Deadline recorded from course materials:** Friday, November 13, 2026, at 11:59 PM PST. Verify the course platform's instructions before uploading.

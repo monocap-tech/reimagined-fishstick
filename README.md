@@ -1,53 +1,49 @@
-# Relay Yard — CPSC 386 Project 2
+# Relay Yard
 
-A one-room 2D Lights Out puzzle-platformer. Walk across six **separated** pressure plates or jump over plates to avoid triggering them. Touching plate i toggles indicator i and its immediate horizontal neighbors. Illuminate **all six** simultaneously to raise the gate and reach the exit.
+**CPSC 386 — Project 2 | Unity 6.6 (6000.6.4f1)**
 
-**Status:** The source code and Editor scene assembler are committed. Generated Unity scenes, import-generated .meta files, compilation checks, gameplay testing, AudioMixer, and a standalone build **still need verification on the Unity workstation**. Do not represent the branch as a complete tested submission yet.
+Relay Yard is a one-room 2D puzzle-platformer. Walking onto a floor plate toggles that circuit and its immediate neighbors. All six indicators must be lit together to unlock the exit. Jumping lets the player cross plates without activating them.
 
-## Game design
+The project uses Unity's Universal Render Pipeline with a 2D Renderer and a player-carried Light 2D.
 
-- Six floor plates with safe ground between them; the player physically chooses which to press or bypass.
-- All switches reversible: a new contact after leaving the plate toggles its light neighborhood again. No latch or point accumulation.
-- Initial indicators from left: OFF, OFF, ON, OFF, ON, OFF (mask 20). One verified logical solution is plates 2, 4, 6 (1-based indices); physical movement must still be playtested.
-- All six lights on triggers a completion burst, sound and upward-moving solid gate. A **separate** goal beyond the gate loads Win only after the gate clears.
-- Jumping is grounded and responsive. A zero-friction PhysicsMaterial2D (as in Lantern Dash midterm) avoids undesired wall sticking.
-- Near the gate, a sprite halo brightens to evoke the midterm's lantern-lit gate. This is a **visual approximation**, not a URP physically lit material, because the project is still on Built-In.
+## Run
 
-## Technical requirements
+Open this repository as a Unity project, let its packages import, then open `Assets/Scenes/MainMenu.unity` and press Play. The three playable scenes are **MainMenu**, **Game**, and **Win**. They must appear in the Build Profiles scene list in that order for a standalone build.
 
-1. New Input System asset with 1D Move A/D/arrows and Jump Space, Rigidbody2D, Ground Probe + Physics2D.OverlapCircle.
-2. PressurePlate.OnTriggerEnter2D reports switch presses to LightsOutController; LightsOutBoard is an event-driven reversible state machine; a gate reacts only to the solved transition.
-3. AudioDirector singleton survives Menu/Game/Win, plays synthesized original background music and distinct jump/plate/unlock effects; routes through Resources/RelayMixer Music/SFX groups when created; music volume saved with PlayerPrefs.
-4. SwitchStyle ScriptableObject type with two generated assets (CyanSwitch and GoldSwitch); LightsOutBoard is pure C# logic instantiated by LightsOutController.
-5. Animator: Locomotion, Jump, Fall states; 1D Idle/Walk/Run blend tree driven by smoothed Speed, VerticalSpeed, Grounded; actual keyframed scaling motion.
-6. JumpFeedback StateMachineBehaviour fires the jump moment's particles/audio on Jump entry.
-7. Jump and switch effects use scripted ParticleSystem.Emit(n), with no continuous emission; completion burst uses Emit as well.
-8. SeededSignal makes a decorative, animated Perlin-noise/sine-line visualizer with Inspector seed, scale, amplitude and speed parameters. It never changes puzzle solvability.
+### Controls
 
-## How to run
+| Control | Action |
+|---|---|
+| A / D or Left / Right | Move |
+| Space | Jump |
+| Esc | Pause / Resume |
+| Hold R (~0.9 s) | Restart puzzle, with clockwise progress indicator |
+| Click RESET | Restart immediately |
+| Mouse | Menu, pause, and audio controls |
 
-Read **ASSEMBLY.md**, **TESTING.md**, and **SUBMISSION.md**. **For the already working local scenes, use Tools > Relay Yard > Upgrade UI In Existing Scenes**, which saves backups and adds Canvas menus plus pause without regenerating gameplay. Use Assemble Lights Out Room ONLY for a brand-new project, because it overwrites all three scenes and their generated assets. Commit manually generated scenes and all .meta files after successful testing.
+Main Menu and Pause both open **Audio** settings with independent Music/SFX volume sliders, mute controls, Test SFX, and Reset Audio. Audio preferences persist locally. A timer measures a clear until the player reaches the exit; only the fastest successful clear is retained as the best time. No attempt count is recorded.
 
-## Source and submission
+## Program structure
 
-Project 2 is on branch [cpsc386-project2-relay-yard](https://github.com/monocap-tech/reimagined-fishstick/tree/cpsc386-project2-relay-yard); Project 1 remains untouched on main.
+- `Assets/Scenes/`: the three playable scenes and the finished Canvas UI.
+- `Assets/Scripts/`: movement, puzzle rules, scene and exit logic, audio, pause, timer, and UI behaviors.
+- `Assets/Input/RelayControls.inputactions`: movement, jump, pause, and R reset bindings.
+- `Assets/Animations/`: player Animator and animation clips.
+- `Assets/Data/`: the cyan and gold SwitchStyle ScriptableObject assets.
+- `Assets/Materials/`, `Assets/Settings/`: physics and URP sprite materials, URP pipeline and 2D renderer.
+- `Assets/Sprites/`: shared source sprite and the reset-ring graphic.
 
-Submit (a) independently tested Windows/WebGL build ZIP, (b) completed source branch or source archive, and (c) your own completed DOCX/PDF technical documentation, with disclosures and credits. Keep the separate hand-in files in the structure described in SUBMISSION.md, and preserve standard course-style Assets folders. Post the same build for peer review.
+The source excludes historical scene backups, unused prototype assets, and one-time Editor generation/migration tools. The working development history remains on branch `cpsc386-project2-urp-test`. This release branch contains only the current game source and final documentation.
 
-The detailed assignment and syllabus list **Friday, Nov 13, 2026, 11:59 PM** as the due date; use that rather than relying on the module's later overview date.
+## Technical notes
 
-## Project 1 UI features restored
+- The six-switch board logic is a pure C# model (`LightsOutBoard`). The MonoBehaviour controller updates visible indicators and unlocks the gate when the model is solved.
+- The gate rises gradually after unlock. Exit eligibility changes immediately at 6/6; `SceneLoader` handles both trigger entry and continued overlap, so a player already standing in the goal can complete the level.
+- The player Light 2D provides spatial illumination to URP-lit surfaces. Gameplay sprites that need constant legibility use appropriate unlit materials.
+- The persistent `AudioDirector` generates original music and sounds procedurally, with separate Music and SFX channels. It uses Music/SFX AudioMixer groups when a compatible `Assets/Resources/RelayMixer.mixer` is present. **The mixer asset is not currently committed and must be checked against the assignment requirements before hand-in.**
 
-- Gameplay/Pause is an Input Actions binding on Escape; PauseManager uses Time.timeScale=0, Resume restores 1, and scene changes cannot carry a paused state.
-- Native Canvas/CanvasScaler and InputSystemUIInputModule-based menu, HUD, victory and pause interface, replacing OnGUI after scene upgrade.
-- Gameplay pause has Resume, Restart Puzzle and Quit to Menu; MainMenu has Start and Quit Game; victory has Play Again and Main Menu; music volume slider remains persisted.
-- The upgrade command is **non-destructive to gameplay** and backs up `Assets/Scenes/*.unity` to `Assets/SceneBackups/`. Existing prior `Relay Yard Canvas` objects are kept on repeated runs.
-- Unity UI package `com.unity.ugui` is explicitly installed via Packages/manifest.json, like Project 1.
+## Submission
 
-## URP 2D experiment (test branch only)
+See `SUBMISSION.md` for the three deliverables and `TESTING.md` for the remaining release checks. The technical report draft is `docs/PROJECT2_DOCUMENTATION.md`.
 
-For the isolated renderer migration, see [URP_MIGRATION.md](URP_MIGRATION.md). It includes the non-destructive **Tools > Relay Yard > URP Test > Convert Saved Game Scene** step and post-conversion verification. The stable Project 2 branch remains unchanged. **Do not run the destructive scene assembler merely to acquire URP lights.**
-
-## Final UI / timed-run revision (URP test branch)
-
-After the URP scene conversion, run **Tools > Relay Yard > Upgrade to Final HUD and Audio** on the saved scenes. The tool backs them up to `Assets/InterfaceBackups`, adds separate modern Canvases, and deactivates the original ones. It adds an objective/time top band, a keyboard control and hold-R reset bottom band, completion best time, independent Music/SFX audio settings on MainMenu/Pause, and updated Win results. See [FINAL_UI_UPGRADE.md](FINAL_UI_UPGRADE.md) for behavior, safe execution steps and acceptance tests. This does not rebuild the puzzle or URP environment.
+**Verification boundary:** Editor gameplay has been reported working; this cleaned release source still needs a Unity import/build check and independent Windows-player test. The final report must include accurate asset credits and disclosure of substantial ChatGPT assistance.

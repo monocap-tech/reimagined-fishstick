@@ -1,95 +1,78 @@
-# Project 2 technical documentation — Relay Yard (WORKING DRAFT)
+# Relay Yard — Project 2 technical report (review draft)
 
-CPSC 386-05 | Fall 2026 | Individual Unity project
+**Course:** CPSC 386, Fall 2026  
+**Engine:** Unity 6.6 (6000.6.4f1), URP 2D Renderer  
+**Status:** Source-based technical draft. Review and personalize before DOCX/PDF submission; complete testing blanks with actual evidence.
 
-**IMPORTANT:** This is a project-generated source inventory and planning outline, not an independently authored submission document. Verify it, write or revise the actual design discussion yourself, disclose AI assistance as required, and record actual Unity/build tests before exporting to Word/PDF.
+## 1. Project overview and design
 
-## Overview and intended experience
+Relay Yard is a one-room 2D puzzle-platformer inspired by the reversible-state structure of Lights Out. The player walks over six separated pressure plates; contacting plate *i* flips the state of *i* and its immediate neighbors. The initial six-light state is OFF, OFF, ON, OFF, ON, OFF. The player can jump to bypass a plate, turning platform traversal into a way to select puzzle inputs.
 
-Relay Yard is a single-room six-switch Lights Out puzzle-platformer. Floor plates are separated by safe ground. Walking onto a plate toggles its indicator and its immediate left/right neighbors; jumping allows a player to bypass plates. All six indicator lights must be ON simultaneously to raise a physical gate. The player then reaches a separate goal trigger to change to the Win scene.
+When all six indicators are ON, the puzzle is solved, an unlock sound and particles play, and the exit gate begins rising. The goal becomes eligible immediately on the solved event. The player still needs to reach the goal, including when already overlapping its trigger at the moment of unlock. A successful goal entry loads the Win screen.
 
-Starting pattern left-to-right: OFF OFF ON OFF ON OFF. A mathematically verified solution is 2, 4, 6 (switch labels are 1-based). Whether the player can physically execute the intended jump sequence still requires playtesting.
+A clear-time clock continues until the goal is reached; the fastest successful clear persists locally as the personal best. The game does **not** count attempts.
 
-The design uses physical traversal to select puzzle inputs, event-driven state to implement reversible toggling, and immediate light/color/sound/particle feedback to make cause and effect visible.
+## 2. Scenes and user interface
 
-## Scenes and GameObjects
+- **MainMenu:** title, brief neighbor-toggle rule, Start, Audio and Quit.
+- **Game:** player, floor/walls, six plates and indicators, gate, goal trigger, procedural signal, particle effects, player-carried Light 2D, ambient Light 2D, top objective/time band and bottom control legend.
+- **Win:** clear time, best time, New Best when applicable, Replay and Main Menu.
 
-- **MainMenu**: Main Camera / AudioListener, persistent AudioDirector instance, SceneLoader and SceneUI, native Canvas Start, Quit Game, and saved music-volume slider after UI upgrade.
-- **Game**: Player (Dynamic Rigidbody2D, BoxCollider2D with Slick friction=0, Ground Probe, Input Action asset; child Visual with Animator); Solid Floor (RelayGround layer); Pressure Plate 1..6 (trigger collider, SwitchStyle, ParticleSystem); Indicator Light 1..6; Lights Out Controller; Exit Gate (solid collider + proximity halo + upward movement); separate Goal Beyond Gate with trigger-enabled SceneLoader; Seeded Perlin Signal (LineRenderer); Completion Burst; SceneUI HUD with SceneLoader.
-- **Win**: Main Camera / AudioListener, duplicate-guarded AudioDirector, native Canvas victory/replay/menu/volume controls and SceneLoader.
+An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The audio panel is available from MainMenu and Pause. Music and SFX have independent sliders and mute buttons; Reset Audio restores default levels. The keyboard's **R** command requires approximately 0.9 seconds of uninterrupted holding to reset the puzzle. A clockwise radial gauge fills during the hold and visually drains when released before confirmation. The HUD reset button also supports an immediate mouse click.
 
-## Source script inventory
+## 3. Key scripts and architecture
 
-- **PlayerMotor.cs**: InputActions Gameplay/Move/Jump, physics body movement, grounded jump eligibility, Animator Speed/VerticalSpeed/Grounded, Jump state feedback.
-- **LightsOutBoard.cs**: pure C# board model: initial bitmask, reversible toggling of self and immediate neighbors, lit count and solved state.
-- **PressurePlate.cs**: per-plate OnTriggerEnter2D sends input to controller; repeated entry is allowed; ParticleSystem.Emit and plate SFX; reads SwitchStyle.
-- **LightsOutController.cs**: MonoBehaviour owns LightsOutBoard, updates indicator/plate colors on input, unlocks gate and fires solved event once.
-- **SwitchStyle.cs**: ScriptableObject type defining on/off colors and a label; CyanSwitch and GoldSwitch are two distinct assets used by alternating plates.
-- **ExitGate.cs**: solid sliding gate, updates a proximity halo and gate appearance, rises after solved.
-- **ExitGoal.cs**: goal trigger beyond gate loads Win only when the gate has opened.
-- **AudioDirector.cs**: singleton/DontDestroyOnLoad sound, distinct generated SFX and looping music, AudioMixer Music/SFX groups, PlayerPrefs volume.
-- **JumpFeedback.cs**: StateMachineBehaviour triggers jump feedback upon Animator state entry.
-- **SeededSignal.cs**: deterministic Perlin noise plus sine-wave visualizer drawn by a LineRenderer. Inspector exposes seed/noiseScale/noiseStrength/amplitude/speed.
-- **SceneUI.cs**: menu/game/win Canvas progress and music-volume UI, with legacy OnGUI fallback until in-place upgrade; delegates transitions to SceneLoader.
-- **SceneLoader.cs**: course-style reusable scene transition component; UI loads named scenes, exits desktop builds and goal trigger loads Win only after gate clears. Resets Time.timeScale on transitions.
-- **PauseManager.cs**: reuses Project 1's Escape action, hidden pause panel, Time.timeScale=0, Resume, Restart Puzzle and Quit to Menu; cleanup resets time scale.
-- **RelayYardAssembler.cs**: Editor-only full scene/data/Animator generator for fresh scenes; now installs native UI automatically. Destructive when rerun on existing scenes.
-- **RelayYardCanvasInstaller.cs**: Editor-only *in-place* Canvas/Pause installer; creates scene backups before modifying existing MainMenu, Game and Win.
-- **LightsOutPuzzleSelfTest.cs**: Editor-only known-solution and state-reachability checks.
+| Script | Responsibility |
+|---|---|
+| `PlayerMotor.cs` | Input System movement/jump, Rigidbody2D motion, grounded probe, Animator parameters |
+| `LightsOutBoard.cs` | Pure C# reversible six-bit board, neighborhood toggling, solved-state test |
+| `LightsOutController.cs` | Reacts to plate presses, updates visuals, sends unlock event, triggers solve particles/audio |
+| `PressurePlate.cs` | Trigger-enter plate detection and local feedback |
+| `SwitchStyle.cs` | ScriptableObject palette definition for plate/indicator states |
+| `ExitGate.cs` | Immediate unlock flag and collision clearance; gradual visible ascent |
+| `SceneLoader.cs` | Menu/game/win transitions; goal trigger accepts both entry and continued overlap |
+| `RelayRunClock.cs` | Gameplay timer, completed clear time and persisted fastest clear |
+| `ResetHoldController.cs` | R hold duration, release cancellation, radial progress and click reset |
+| `PauseManager.cs` | Time scale, Escape toggling and pause navigation |
+| `SceneUI.cs` | HUD status and timer/results text updates |
+| `AudioDirector.cs` | Persistent generated audio, separate Music/SFX volume/mutes, PlayerPrefs |
+| `AudioSettingsPanel.cs` | Audio sliders/buttons and synchronized labels |
+| `SeededSignal.cs` | Inspector-configured Perlin/sine procedural waveform |
+| `JumpFeedback.cs` | Animator StateMachineBehaviour for jump feedback |
 
-The prior prototype's RelayLedger/RelayController/RelayBeacon/RelayDefinition/SeededBackdrop remain legacy source files, not used in the new six-switch scene, until the final cleanup pass.
+## 4. Unity features and rubric correspondence
 
-## Rubric mapping
+- **Input/physics:** New Input System action asset for A/D/arrow movement, Space, Esc and R; Dynamic Rigidbody2D, colliders, grounded jump logic and zero-friction PhysicsMaterial2D.
+- **State and events:** Pure C# LightsOutBoard plus MonoBehaviour controller. Switch contacts call Press, and solved state unlocks the gate.
+- **ScriptableObjects:** Distinct `CyanSwitch.asset` and `GoldSwitch.asset` store switch presentation options.
+- **Animation:** Animator with idle, walk, run, jump and fall animation clips; state-based jump feedback.
+- **Particles/audio:** Short scripted particle bursts for plates/jump/solve and original procedurally synthesized sounds/music.
+- **Procedural behavior:** Perlin-driven animated signal visualizer, independent of logical puzzle state.
+- **Rendering/UI:** URP 2D Renderer with Lit/Unlit sprites and player-mounted Light 2D; native Canvas UI with interactive audio settings and radial reset indication.
+- **Persistence:** Best clear time and audio preferences stored locally through PlayerPrefs.
 
-1. **2D input/physics/jump**: RelayControls.inputactions with Gameplay/Move and Jump, Rigidbody2D, zero-friction BoxCollider2D, Physics2D.OverlapCircle Ground Probe.
-2. **Event-driven puzzle state**: pressure plate trigger sends Press(index); pure C# model updates 3-bit neighborhood; MonoBehaviour refreshes presentation and unlocks gate on solved transition.
-3. **Audio**: original synthesized music and jump/plate/unlock SFX, AudioDirector survives scene transitions, Music/SFX AudioMixer groups (MUST CREATE and VERIFY), saved music volume via PlayerPrefs.
-4. **ScriptableObjects and pure C#**: CyanSwitch and GoldSwitch are separate SwitchStyle assets; LightsOutBoard is non-MonoBehaviour and instantiated by LightsOutController.
-5. **Animator and blend**: Locomotion/Jump/Fall states; 1D Idle/Walk/Run blend and animated .anim curves controlled by Speed, VerticalSpeed, Grounded.
-6. **Animation-driven moment**: JumpFeedback.StateMachineBehaviour.OnStateEnter calls PlayerMotor.OnJumpAnimationStarted() to emit jump dust and play jump audio.
-7. **Particles triggered by code**: ParticleSystem.Emit(n) for jump, each toggle, and puzzle solution.
-8. **Procedural**: SeededSignal uses Inspector-controlled seed and Mathf.PerlinNoise, updated at runtime as a decorative line waveform. The puzzle remains deterministic and reachable.
+**AudioMixer verification pending:** The code can route through an optional Music/SFX AudioMixer, but the source branch does not yet include a `RelayMixer.mixer` asset. Confirm and supply it if the rubric requires mixer-based routing.
 
-## Distinction from studied examples
+## 5. Testing evidence (complete with observed results)
 
-- **Assignment 9**: Perlin noise seed/scale and scripted particle bursts, adapted to a 2D background trace and switch feedback rather than a cube terrain.
-- **Assignment 10**: event-driven switch puzzle and grounded jumping, adapted from permanent latches to reversible neighbor toggles and physically spaced plates.
-- **Lantern Dash midterm study guide**: zero-friction PhysicsMaterial2D, solid gate and separate goal concept, reusable SceneLoader component and midterm-style player-near-door glow. The current Built-In version approximates proximity illumination with a sprite halo; it does NOT contain a URP/Lit shader/Point Light reproduction.
-- **Assignment 8**: actual keyframed animation states and smoothed Idle/Walk/Run blend, plus JumpFeedback StateMachineBehaviour.
+- Editor version and test date: Unity 6000.6.4f1, November 12, 2026.
+- Editor gameplay/UI: Reported working; screenshots show menu, game HUD, pause/audio and result displays.
+- Gate/goal trigger correction: Reported working after implementing `OnTriggerStay2D` alongside `OnTriggerEnter2D` and restoring gradual gate motion.
+- Cleaned release branch import: **Not yet verified.**
+- AudioMixer group routing: **Not yet verified.**
+- Windows standalone build and full playthrough: **Not yet verified.**
+- Tested release commit: **To fill in.**
 
-## Dependencies, sources and disclosure
+## 6. Asset sources, attribution and assistance
 
-- Unity Engine and official Unity Input System package are project dependencies.
-- Square graphic generated locally by Editor utility; audio synthesized in AudioDirector; no third-party artwork or prerecorded audio currently included.
-- The source implementation, scene assembler, proposed solution and this outline were developed with substantial ChatGPT assistance. **Course policy permits AI on projects only with disclosure and citation.** Disclose the actual help received in your independently written submission. Do not submit AI-generated explanatory prose as your original writing.
-- Verify whether any third-party code/assets need instructor permission and attribution. Existing Project 1 files on the repo's main branch are a separate project and not part of this Project 2 build.
+The project uses Unity and its official packages. Core geometric art and the reset-ring graphic are generated locally; `AudioDirector` synthesizes its background music and effect tones at runtime rather than distributing prerecorded third-party sounds. Review the final `Assets/` contents to confirm whether any additional imported asset requires attribution.
 
-## Actual testing and delivery record — fill in only after verification
+**AI-assistance disclosure (must be retained and personally reviewed):** ChatGPT was used substantially during design iteration, research, C# scripting, project structuring, troubleshooting, URP migration and UI tooling, acceptance-test planning, and drafting this documentation outline. The author reviewed, integrated, debugged and tested the resulting work in Unity. The final report should identify assistance in the form required by the instructor, and independently explain the author's actual decisions and testing.
 
-- Unity version:
-- Regenerated scene date:
-- Unity Console (warnings/errors):
-- LightsOutPuzzleSelfTest result:
-- Physical jump-over-plate sequence:
-- AudioMixer group verification:
-- Animator and particle result:
-- Gate/exit and restart result:
-- Standalone platform, file name and tested location:
-- Build ZIP:
-- Source commit/branch:
-- Final document prepared and AI disclosures confirmed:
-- Submission date:
+## 7. Submission record
 
-The detailed rubric and syllabus use **November 13, 2026, 11:59 PM** as the operational deadline, with peer-review build posting.
-
-## Submission and source structure
-
-Preserve the class-style `Assets/Scenes`, `Scripts`, `Audio`, `Prefabs`, `Materials`, `Data`, `Tiles`, `Input`, `Sprites`, `Animations`, `Resources`, and `Editor` folders. The playable build archive, source link/archive, and individually reviewed report are separate deliverables. See `SUBMISSION.md`. The initial `Assets/RelayYardGenerated` folder is legacy, not the revised assembler's output target.
-
-## Pause and navigation revisions (pending actual playtest)
-
-Project 1 `PauseManager` and `NeonRangeBuilder` provided the course precedent for asset-bound Escape input, Canvas/CanvasScaler, scene-safe `Time.timeScale`, a hidden pause overlay, and persistent `Button` callbacks. The revised Project 2 implementation includes `PauseManager`, an Escape action, and a non-destructive `RelayYardCanvasInstaller` that backs up existing scene files and upgrades the three UI layouts. The user must run the installer in their local Unity Editor; this repository commit does not itself contain the user's generated `.unity` scenes, so these controls are not yet established as working in their local instance. Report actual tests in the record above.
-
-## Final UI and timing additions — pending local validation
-
-The URP test branch introduces a completion timer and best time (`RelayRunClock`), continuous held-R reset with clockwise radial progress and release cancellation (`ResetHoldController`), Music/SFX mute/volume controls (`AudioSettingsPanel` and `AudioDirector`) and a new edge-organized Canvas UI generated by `RelayYardModernUIInstaller`. The main menu uses one instruction: "Stepping on a plate also toggles its neighbors." In Game, objective/current/best time occupy the top band; controls and reset occupy the bottom band; Win reports clear/best time. No attempts are tracked. The Editor tool must be run in Unity on existing saved scenes, and its results verified before documenting as implemented/working.
+- Source URL and commit: **To fill in.**
+- Built executable folder and ZIP: **To fill in.**
+- Documentation PDF/DOCX: **To fill in.**
+- Platform/build test date: **To fill in.**
+- Peer review / upload confirmation: **To fill in.**
