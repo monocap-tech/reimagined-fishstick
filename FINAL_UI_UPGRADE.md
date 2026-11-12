@@ -44,6 +44,12 @@
 - Clicking the same reset control immediately reloads Game, without a hold.
 - Hold R is disabled when the puzzle has been solved or when the game is paused. Pause's explicit Restart action still works.
 
+## Exit availability
+
+- The six-switch solve event immediately unlocks the exit and disables the blocking gate collider.
+- The gate continues its upward animation for visual feedback; the Win goal trigger accepts the player as soon as the solve event fires, rather than waiting for the gate to finish its lift.
+- This does **not** auto-complete the game: the player must still reach the goal. The timer stops there, not on the sixth light.
+
 ## Timing contract
 
 - The elapsed clock starts when the playable Game scene becomes active, advances using `Time.deltaTime` and therefore freezes with `Time.timeScale=0`.
@@ -76,6 +82,7 @@
 - [ ] Escape pauses clock/movement/gate; opening Audio during pause and then leaving it works.
 - [ ] Resuming from Audio or Escape does not leave an invisible audio modal active.
 - [ ] R cannot reset during pause or after all six lights are on; pause-menu Restart remains available.
+- [ ] As soon as all six lights turn on, the gate no longer blocks the player and the goal is eligible; the gate animation can still continue.
 - [ ] After solving and crossing the goal, Win shows clear/best time; best survives app restart.
 - [ ] Restarting or exiting to menu without a clear does **not** update best time.
 - [ ] Gate URP light, particles, waveform, audio, scene navigation, and walls still work.
