@@ -1,62 +1,80 @@
-# Project 2 documentation — Relay Yard
-CPSC 386-05 | Fall 2026 | Individual Unity game project
+# Project 2 technical documentation — Relay Yard (WORKING DRAFT)
 
-**Project status: draft based on source implementation. Verify against assembled Unity project and finished build before exporting to PDF/Word.**
+CPSC 386-05 | Fall 2026 | Individual Unity project
 
-## Game description and design decisions
+**IMPORTANT:** This is a project-generated source inventory and planning outline, not an independently authored submission document. Verify it, write or revise the actual design discussion yourself, disclose AI assistance as required, and record actual Unity/build tests before exporting to Word/PDF.
 
-Relay Yard is a one-level 2D puzzle-platformer. Move left/right and jump to activate three colored relays by contact; this unlocks a previously closed exit. The design intentionally uses fixed, easily testable platforms and seeded decorative starfield generation to preserve beatability. The goal is to demonstrate the course's technical patterns cohesively rather than build a large content-heavy game.
+## Overview and intended experience
 
-## Scenes
+Relay Yard is a single-room six-switch Lights Out puzzle-platformer. Floor plates are separated by safe ground. Walking onto a plate toggles its indicator and its immediate left/right neighbors; jumping allows a player to bypass plates. All six indicator lights must be ON simultaneously to raise a physical gate. The player then reaches a separate goal trigger to change to the Win scene.
 
-- MainMenu: orthographic camera, one AudioListener, persistent AudioDirector (if none already exists), SceneUI with Start and music volume slider.
-- Game: camera, AudioDirector duplicate guard, Player, solid floor and raised platform, three RelayBeacon triggers, RelayController, ExitGate, SeededBackdrop, gameplay HUD.
-- Win: victory camera, AudioDirector duplicate guard, SceneUI with replay and volume slider.
+Starting pattern left-to-right: OFF OFF ON OFF ON OFF. A mathematically verified solution is 2, 4, 6 (switch labels are 1-based). Whether the player can physically execute the intended jump sequence still requires playtesting.
 
-## Scripts
+The design uses physical traversal to select puzzle inputs, event-driven state to implement reversible toggling, and immediate light/color/sound/particle feedback to make cause and effect visible.
 
-- PlayerMotor.cs — reads InputActionAsset, uses Rigidbody2D velocity, gates jumps through an OverlapCircle ground check, drives Animator parameters.
-- RelayLedger.cs — pure C# HashSet model of expected and activated relay IDs; exposes counts and solved state.
-- RelayController.cs — MonoBehaviour adapter, initialized with three relay IDs; uses RelayLedger on trigger events and unlocks exit when complete.
-- RelayBeacon.cs — trigger-activated relay with ScriptableObject-defined active color, particle burst, and audio response.
-- RelayDefinition.cs — CreateAssetMenu ScriptableObject defining relay visual data; CyanRelay and GoldRelay are separate generated instances.
-- ExitGate.cs — initially locked exit trigger; changes color when unlocked and switches to Win scene on player contact.
-- AudioDirector.cs — singleton DontDestroyOnLoad audio manager, generated original audio clips, two AudioMixer groups after RelayMixer creation, saved volume through PlayerPrefs.
-- JumpFeedback.cs — StateMachineBehaviour executes PlayerMotor feedback when Animator enters Jump state.
-- SeededBackdrop.cs — deterministic System.Random background generator, configurable Inspector seed and star count.
-- SceneUI.cs — minimal start, win, restart and volume HUD.
-- RelayYardAssembler.cs — Editor-only reproducible scene, data, animation and Build Profiles generator (not included in runtime build).
+## Scenes and GameObjects
 
-## Requirements compliance map
+- **MainMenu**: Main Camera / AudioListener, persistent AudioDirector instance, SceneUI menu/start and saved music-volume control.
+- **Game**: Player (Dynamic Rigidbody2D, BoxCollider2D with Slick friction=0, Ground Probe, Input Action asset; child Visual with Animator); Solid Floor (RelayGround layer); Pressure Plate 1..6 (trigger collider, SwitchStyle, ParticleSystem); Indicator Light 1..6; Lights Out Controller; Exit Gate (solid collider + proximity halo + upward movement); separate Goal Beyond Gate; Seeded Perlin Signal (LineRenderer); Completion Burst; SceneUI HUD.
+- **Win**: Main Camera / AudioListener, duplicate-guarded AudioDirector, SceneUI victory/replay.
 
-1. Input System: RelayControls.inputactions Gameplay/Move and Gameplay/Jump, Rigidbody2D on Player, Physics2D.OverlapCircle ground probe against RelayGround layer.
-2. Puzzle tracking: RelayLedger HashSet updated only on RelayBeacon.OnTriggerEnter2D; RelayController unlocks ExitGate when all three distinct relays are activated.
-3. Audio: AudioDirector maintains music plus three distinct SFX (jump, relay, unlock); loads Resources/RelayMixer.mixer with Music and SFX groups; DontDestroyOnLoad/duplicate guard; persists RelayYard.MusicVolume in PlayerPrefs. **Verify mixer asset exists before submitting.**
-4. Data and logic separation: RelayDefinition CreateAssetMenu with two instantiated data assets (CyanRelay, GoldRelay); RelayLedger is pure C# and is used by RelayController.
-5. Animator: Player.controller contains 3 Animator states (Locomotion, Jump, Fall) plus 1D Idle/Run blend tree, driven by Speed/VerticalSpeed/Grounded script parameters.
-6. StateMachineBehaviour: JumpFeedback.OnStateEnter invokes PlayerMotor.OnJumpAnimationStarted.
-7. Particles: PlayerMotor and RelayBeacon call ParticleSystem.Play at jump and activation.
-8. Procedure: SeededBackdrop generates randomized decorative stars from exposed seed and count; collision platforms are fixed, so level remains beatable.
+## Source script inventory
 
-## Third-party assets / packages / tutorials
+- **PlayerMotor.cs**: InputActions Gameplay/Move/Jump, physics body movement, grounded jump eligibility, Animator Speed/VerticalSpeed/Grounded, Jump state feedback.
+- **LightsOutBoard.cs**: pure C# board model: initial bitmask, reversible toggling of self and immediate neighbors, lit count and solved state.
+- **PressurePlate.cs**: per-plate OnTriggerEnter2D sends input to controller; repeated entry is allowed; ParticleSystem.Emit and plate SFX; reads SwitchStyle.
+- **LightsOutController.cs**: MonoBehaviour owns LightsOutBoard, updates indicator/plate colors on input, unlocks gate and fires solved event once.
+- **SwitchStyle.cs**: ScriptableObject type defining on/off colors and a label; CyanSwitch and GoldSwitch are two distinct assets used by alternating plates.
+- **ExitGate.cs**: solid sliding gate, updates a proximity halo and gate appearance, rises after solved.
+- **ExitGoal.cs**: goal trigger beyond gate loads Win only when the gate has opened.
+- **AudioDirector.cs**: singleton/DontDestroyOnLoad sound, distinct generated SFX and looping music, AudioMixer Music/SFX groups, PlayerPrefs volume.
+- **JumpFeedback.cs**: StateMachineBehaviour triggers jump feedback upon Animator state entry.
+- **SeededSignal.cs**: deterministic Perlin noise plus sine-wave visualizer drawn by a LineRenderer. Inspector exposes seed/noiseScale/noiseStrength/amplitude/speed.
+- **SceneUI.cs**: menu/game/win HUD, restart, music-volume UI.
+- **RelayYardAssembler.cs**: Editor-only scene/data/Animator generator, and setup audit (not in player build).
+- **LightsOutPuzzleSelfTest.cs**: Editor-only known-solution and state-reachability checks.
 
-- Unity engine built-in primitives and components, plus official Unity Input System package.
-- Graphics: square texture generated in Editor by our assembler; no third-party art.
-- Audio: generated algorithmically by AudioDirector; no third-party music or recordings.
-- Techniques: standard Unity public Input System, Animator, physics and AudioMixer APIs; no copied third-party project or asset.
-- **After implementation, amend this section to list any additional assets, code, packages, tutorials or sources actually used.**
+The prior prototype's RelayLedger/RelayController/RelayBeacon/RelayDefinition/SeededBackdrop remain legacy source files, not used in the new six-switch scene, until the final cleanup pass.
 
-## Build / verification record — complete after testing
+## Rubric mapping
 
-- Unity Editor version: [verify]
-- Platform and build file name: [verify]
-- Build runs outside the Editor: [not yet tested]
-- Console errors during play: [not yet tested]
-- All eight requirements tested: [not yet tested]
-- Date tested: [enter after testing]
+1. **2D input/physics/jump**: RelayControls.inputactions with Gameplay/Move and Jump, Rigidbody2D, zero-friction BoxCollider2D, Physics2D.OverlapCircle Ground Probe.
+2. **Event-driven puzzle state**: pressure plate trigger sends Press(index); pure C# model updates 3-bit neighborhood; MonoBehaviour refreshes presentation and unlocks gate on solved transition.
+3. **Audio**: original synthesized music and jump/plate/unlock SFX, AudioDirector survives scene transitions, Music/SFX AudioMixer groups (MUST CREATE and VERIFY), saved music volume via PlayerPrefs.
+4. **ScriptableObjects and pure C#**: CyanSwitch and GoldSwitch are separate SwitchStyle assets; LightsOutBoard is non-MonoBehaviour and instantiated by LightsOutController.
+5. **Animator and blend**: Locomotion/Jump/Fall states; 1D Idle/Walk/Run blend and animated .anim curves controlled by Speed, VerticalSpeed, Grounded.
+6. **Animation-driven moment**: JumpFeedback.StateMachineBehaviour.OnStateEnter calls PlayerMotor.OnJumpAnimationStarted() to emit jump dust and play jump audio.
+7. **Particles triggered by code**: ParticleSystem.Emit(n) for jump, each toggle, and puzzle solution.
+8. **Procedural**: SeededSignal uses Inspector-controlled seed and Mathf.PerlinNoise, updated at runtime as a decorative line waveform. The puzzle remains deterministic and reachable.
 
-## Repository
+## Distinction from studied examples
 
-Source branch: https://github.com/monocap-tech/reimagined-fishstick/tree/cpsc386-project2-relay-yard
+- **Assignment 9**: Perlin noise seed/scale and scripted particle bursts, adapted to a 2D background trace and switch feedback rather than a cube terrain.
+- **Assignment 10**: event-driven switch puzzle and grounded jumping, adapted from permanent latches to reversible neighbor toggles and physically spaced plates.
+- **Lantern Dash midterm study guide**: zero-friction PhysicsMaterial2D, solid gate and separate goal concept, midterm-style player-near-door glow. The current Built-In version approximates proximity illumination with a sprite halo; it does NOT contain a URP/Lit shader/Point Light reproduction.
+- **Assignment 8**: actual keyframed animation states and smoothed Idle/Walk/Run blend, plus JumpFeedback StateMachineBehaviour.
 
-**Before submission:** export this content to PDF or Word, replace bracketed fields and remove all pending-test language after tests have actually passed. Include any public WebGL URL if used.
+## Dependencies, sources and disclosure
+
+- Unity Engine and official Unity Input System package are project dependencies.
+- Square graphic generated locally by Editor utility; audio synthesized in AudioDirector; no third-party artwork or prerecorded audio currently included.
+- The source implementation, scene assembler, proposed solution and this outline were developed with substantial ChatGPT assistance. **Course policy permits AI on projects only with disclosure and citation.** Disclose the actual help received in your independently written submission. Do not submit AI-generated explanatory prose as your original writing.
+- Verify whether any third-party code/assets need instructor permission and attribution. Existing Project 1 files on the repo's main branch are a separate project and not part of this Project 2 build.
+
+## Actual testing and delivery record — fill in only after verification
+
+- Unity version:
+- Regenerated scene date:
+- Unity Console (warnings/errors):
+- LightsOutPuzzleSelfTest result:
+- Physical jump-over-plate sequence:
+- AudioMixer group verification:
+- Animator and particle result:
+- Gate/exit and restart result:
+- Standalone platform, file name and tested location:
+- Build ZIP:
+- Source commit/branch:
+- Final document prepared and AI disclosures confirmed:
+- Submission date:
+
+The detailed rubric and syllabus use **November 13, 2026, 11:59 PM** as the operational deadline, with peer-review build posting.

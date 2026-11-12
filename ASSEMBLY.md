@@ -1,43 +1,44 @@
-# Relay Yard — Unity assembly procedure
+# Relay Yard — Six-Switch Room: Unity assembly and build guide
 
-## Preconditions
+## Safety and preparation
 
-1. Unity 6 LTS (the previous course project used 6000.6.4f1); Input System package must resolve. Use a regular Unity 6 2D project if opening the source scaffold directly does not produce normal ProjectSettings.
-2. Clone the cpsc386-project2-relay-yard branch and open the project in Unity Hub. Alternatively create a new Unity 6 2D Built-In project and copy Assets, Packages and ProjectSettings/ProjectVersion.txt into it. Wait for asset import and C# compilation.
-3. Set Project Settings > Player > Active Input Handling to Input System Package (New) or Both. Restart Unity if prompted.
-4. Fix any red Console errors before proceeding.
+1. Keep using your short local project path: C:\Users\user\Documents\Project 2\RelayYard.
+2. Pull only branch cpsc386-project2-relay-yard using git pull --ff-only origin cpsc386-project2-relay-yard. If Git reports that untracked Unity files would be overwritten, **do not reset/clean**. Preserve the local generated files and resolve the conflict explicitly.
+3. Open in Unity 6; let the Editor import assets. In Project Settings > Player > Other Settings, set Active Input Handling to Input System Package (New) or Both. Resolve red compile errors before proceeding.
+4. Keep the current Built-In pipeline for this iteration. URP migration is optional and deferred; the midterm-style gate proximity feedback is a sprite halo rather than 3D lighting.
 
-## Generate the scene assets
+## Regenerate the NEW game, not the old three-relay prototype
 
-5. In Unity's menu run Tools > Relay Yard > Assemble Playable Prototype. This creates:
-   - MainMenu, Game, Win scenes in Assets/RelayYardGenerated/Scenes
-   - Player with Rigidbody2D, BoxCollider2D, Input Actions, ground probe and Animator
-   - Floor, one raised platform, three trigger relays, exit gate
-   - 1D locomotion blend tree, Jump/Fall states and JumpFeedback StateMachineBehaviour
-   - two different RelayDefinition ScriptableObject instances
-   - jump and relay particles, seeded decorative starfield
-   - Build Profiles scene list: MainMenu, Game, Win
-6. Open Game scene and inspect RelayController, the relays, Player and ground layer. The assembler can overwrite generated scenes on repeated runs; save custom changes separately.
+5. Stop Play mode. Use **Tools > Relay Yard > Assemble Lights Out Room**. The older menu name **Assemble Playable Prototype** is an alias for the same updated generator.
+6. Read the confirmation: this action **overwrites** Assets/RelayYardGenerated/Scenes/MainMenu.unity, Game.unity, and Win.unity, plus the generated Player.controller. Do not run it again after hand-editing those scenes unless you intend to replace them. The Editor opens MainMenu afterward.
+7. Generated Game contains:
+   - Player root with zero-friction BoxCollider2D, Rigidbody2D, ground probe, Visual child with Animator, jump particle system.
+   - One continuous solid ground floor, six *separated* pressure plates (each with trigger and sparks), six indicator lights.
+   - LightsOutController; initial lights OFF OFF ON OFF ON OFF.
+   - Exit Gate as a **solid BoxCollider2D** with proximity halo, and a separate Goal Beyond Gate trigger.
+   - Seeded Perlin Signal procedural visualizer, victory burst, AudioDirector, SceneUI.
+   - CyanSwitch and GoldSwitch ScriptableObject assets, animated Idle/Walk/Run/Jump/Fall clips, 1D blend tree.
+   - Build Profiles scenes MainMenu (0), Game (1), Win (2).
+8. The generated scene is not yet committed by the GitHub changes: Unity creates the .unity, .asset, .anim, .png and .meta files locally. Check the Project window and save.
 
-## REQUIRED manual AudioMixer setup — do not skip
+## REQUIRED AudioMixer (manual Unity task)
 
-7. Create folder Assets/Resources if it does not exist. In that folder create an Audio Mixer asset named EXACTLY RelayMixer.mixer (Assets > Create > Audio Mixer).
-8. Open RelayMixer and add two child groups under Master, named EXACTLY Music and SFX. Save asset.
-9. On launch AudioDirector loads Resources/RelayMixer and routes its Music and SFX AudioSources to the corresponding groups. It carries over between MainMenu, Game and Win and restores the saved music-source volume from PlayerPrefs.
-10. Check AudioDirector.MixerConnected in a debugger or add a temporary Inspector check; if false, verify the mixer name, Resources location and group spellings. Do not submit without actual Music/SFX routing.
+9. Create Assets/Resources if necessary. Right-click folder > Create > Audio Mixer. Name the asset **RelayMixer** (file should be Assets/Resources/RelayMixer.mixer).
+10. Open the mixer, add two groups under Master named exactly **Music** and **SFX**. The AudioDirector finds them by name at runtime; audio won't be routed to them if the asset/groups are missing.
+11. Run **Tools > Relay Yard > Validate Six-Switch Logic**; it checks the expected 2-4-6 solution, all 64 patterns' reachability and reversibility. It is a logic-only test, not a physics playtest.
+12. Run **Tools > Relay Yard > Audit Generated Project** for assets, Input Actions, build list and mixer. It cannot prove gameplay and build quality.
 
-The assignment does NOT require an exposed AudioMixer volume parameter: it requires a saved volume setting. Relay Yard persists the music AudioSource volume using PlayerPrefs.
+## Manual gameplay check
 
-## Controls and test
+13. Open MainMenu and Play. Start game, hold A/D or arrows, jump with Space. Step onto a plate and verify that its indicator plus immediate neighboring indicators toggle together. Merely standing on a plate must not generate repeated presses.
+14. From the starting point, jump over plate 1 to land on plate 2. Then jump over plate 3 to activate plate 4, and over plate 5 to activate plate 6. That logical sequence should light all six. Tune PlayerMotor speed/jump velocity and plate spacing in the Editor if needed; verify the physical solution rather than assuming it works.
+15. Gate must glow more strongly near the player while locked; all six lights on must start gate ascent; when the gate clears, enter the distinct goal to reach Win.
+16. Press Restart from Game and verify initial state resets. Test re-entering an already pressed plate; it must toggle again. Run back and forth and try jumping just before, over and onto plates. Ensure no accidental multiple contact from a single landing.
+17. Verify jump and plate particle bursts, audio, Menu -> Game -> Win continuity, singleton duplicate guard, volume saved across a new Play session, and deterministic Perlin signal with alternate Inspector seed.
+18. In Game, verify Animator has Locomotion, Jump, Fall and a working Idle/Walk/Run blend tree. Use the Animator window while playing. Adjust any visible animation defects.
+19. Build using File > Build Profiles into Build/RelayYard-Windows. Zip all output files. Unzip to a new folder and launch the .exe OUTSIDE Unity. Repeat the full playthrough and verify no crashes or missing shader effects.
 
-11. Enter Play in MainMenu. Move with A/D or left/right arrows. Jump with Space.
-12. Collect Relays A, B and C by touching them. One is on the elevated platform; use jump. Gate changes from red to green only after all three relays. Touch green gate to enter Win.
-13. Return to Menu or Win and move the Music volume slider; leave Play mode, start Play again, and verify restored value.
-14. Confirm music is continuous across Menu > Game > Win, and that only one AudioDirector survives transitions.
-15. Change Seed on Procedural Starfield to a different integer, run Game and inspect the generated pattern. The fixed platforms and relays should not move.
+## Git / Canvas finish
 
-## Finalize for GitHub/Canvas
-
-16. Commit Assets/** including generated scenes, ScriptableObjects, Animator, generated PNG and ALL .meta files, alongside Packages, ProjectSettings and documentation. The branch's present source-only state is not final.
-17. Produce a Windows build from File > Build Profiles into Build/RelayYard-Windows. Zip the entire build output, then unzip it elsewhere and launch the .exe. If using WebGL, serve or host the output; opening index.html directly does not reliably work.
-18. Export your completed documentation from docs/PROJECT2_DOCUMENTATION.md to PDF/Word. Attach build ZIP, source link and document in one Canvas submission. Peer-review post must use the exact same build.
+20. After verification, commit ALL Unity-generated .unity, .asset, .anim, image assets, .meta files, Resources/RelayMixer.mixer and ProjectSettings files to the same branch. Retain required third-party/AI assistance documentation per syllabus; Editor utilities can be cleaned up after generated assets are stable but are not in the player build.
+21. Update docs/PROJECT2_DOCUMENTATION.md with truthful test results and your own design rationale, then export to DOCX/PDF. Submit tested ZIP, complete source, document and peer-review build.
