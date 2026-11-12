@@ -8,14 +8,26 @@ namespace RelayYard
     public sealed class AudioDirector : MonoBehaviour
     {
         public static AudioDirector Instance { get; private set; }
-        private const string VolumeKey = "RelayYard.MusicVolume";
+        public const float DefaultMusicVolume = 0.55f;
+        public const float DefaultSfxVolume = 0.75f;
+        private const string MusicVolumeKey = "RelayYard.MusicVolume";
+        private const string SfxVolumeKey = "RelayYard.SfxVolume";
+        private const string MusicMutedKey = "RelayYard.MusicMuted";
+        private const string SfxMutedKey = "RelayYard.SfxMuted";
         private AudioSource musicSource;
         private AudioSource sfxSource;
         private AudioClip jumpClip;
         private AudioClip relayClip;
         private AudioClip unlockClip;
+        private float musicVolume = DefaultMusicVolume;
+        private float sfxVolume = DefaultSfxVolume;
+        private bool musicMuted;
+        private bool sfxMuted;
 
-        public float MusicVolume => musicSource == null ? 0.6f : musicSource.volume;
+        public float MusicVolume => musicVolume;
+        public float SfxVolume => sfxVolume;
+        public bool MusicMuted => musicMuted;
+        public bool SfxMuted => sfxMuted;
         public bool MixerConnected { get; private set; }
 
         private void Awake()
@@ -55,15 +67,73 @@ namespace RelayYard
             relayClip = MakeTone("Relay", 0.28f, 600f, 980f);
             unlockClip = MakeTone("Unlock", 0.6f, 310f, 720f);
 
-            SetMusicVolume(PlayerPrefs.GetFloat(VolumeKey, 0.55f));
+            musicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, DefaultMusicVolume));
+            sfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, DefaultSfxVolume));
+            musicMuted = PlayerPrefs.GetInt(MusicMutedKey, 0) != 0;
+            sfxMuted = PlayerPrefs.GetInt(SfxMutedKey, 0) != 0;
+            ApplyVolumes();
             musicSource.Play();
         }
 
+        // Volume and mute are separate: unmuting restores the previous slider value.
         public void SetMusicVolume(float value)
         {
-            if (musicSource == null) return;
-            musicSource.volume = Mathf.Clamp01(value);
-            PlayerPrefs.SetFloat(VolumeKey, musicSource.volume);
+            musicVolume = Mathf.Clamp01(value);
+            ApplyVolumes();
+            SavePreferences();
+        }
+
+        public void SetSfxVolume(float value)
+        {
+            sfxVolume = Mathf.Clamp01(value);
+            ApplyVolumes();
+            SavePreferences();
+        }
+
+        public void SetMusicMuted(bool muted)
+        {
+            musicMuted = muted;
+            ApplyVolumes();
+            SavePreferences();
+        }
+
+        public void SetSfxMuted(bool muted)
+        {
+            sfxMuted = muted;
+            ApplyVolumes();
+            SavePreferences();
+        }
+
+        public void ResetAudioPreferences()
+        {
+            musicVolume = DefaultMusicVolume;
+            sfxVolume = DefaultSfxVolume;
+            musicMuted = false;
+            sfxMuted = false;
+            ApplyVolumes();
+            SavePreferences();
+        }
+
+        private void ApplyVolumes()
+        {
+            if (musicSource != null)
+            {
+                musicSource.volume = musicVolume;
+                musicSource.mute = musicMuted;
+            }
+            if (sfxSource != null)
+            {
+                sfxSource.volume = sfxVolume;
+                sfxSource.mute = sfxMuted;
+            }
+        }
+
+        private void SavePreferences()
+        {
+            PlayerPrefs.SetFloat(MusicVolumeKey, musicVolume);
+            PlayerPrefs.SetFloat(SfxVolumeKey, sfxVolume);
+            PlayerPrefs.SetInt(MusicMutedKey, musicMuted ? 1 : 0);
+            PlayerPrefs.SetInt(SfxMutedKey, sfxMuted ? 1 : 0);
             PlayerPrefs.Save();
         }
 

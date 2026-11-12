@@ -13,6 +13,10 @@ namespace RelayYard
         [SerializeField] private bool useCanvasUI;
         [SerializeField] private Text progressLabel;
         [SerializeField] private Slider musicVolumeSlider;
+        [SerializeField] private Text currentTimeLabel;
+        [SerializeField] private Text bestTimeLabel;
+        [SerializeField] private Text clearTimeLabel;
+        [SerializeField] private Text recordLabel;
 
         private void Awake() => loader = GetComponent<SceneLoader>();
 
@@ -26,11 +30,39 @@ namespace RelayYard
 
         private void Update()
         {
-            if (progressLabel == null) return;
-            string status = controller == null ? "Loading puzzle..." :
-                "LIGHTS " + controller.LitCount + " / " + controller.TotalCount +
-                (controller.IsSolved ? "   |   GATE OPEN" : "   |   STEP TO TOGGLE • JUMP TO SKIP");
-            if (progressLabel.text != status) progressLabel.text = status;
+            if (screenMode == ScreenMode.Game)
+            {
+                if (progressLabel != null)
+                {
+                    string status = controller == null ? "CIRCUITS -- / 06" :
+                        controller.IsSolved ? "CIRCUITS 06 / 06  -  GATE OPEN" :
+                        string.Format("CIRCUITS {0:00} / {1:00}",
+                            controller.LitCount, controller.TotalCount);
+                    if (progressLabel.text != status) progressLabel.text = status;
+                }
+                if (currentTimeLabel != null)
+                    currentTimeLabel.text = RelayRunClock.Active == null
+                        ? "00:00.00"
+                        : RelayRunClock.FormatTime(RelayRunClock.Active.ElapsedSeconds);
+                if (bestTimeLabel != null)
+                    bestTimeLabel.text = RelayRunClock.HasBest
+                        ? "BEST " + RelayRunClock.FormatTime(RelayRunClock.BestSeconds)
+                        : "BEST --:--.--";
+            }
+            else if (screenMode == ScreenMode.Win)
+            {
+                if (clearTimeLabel != null)
+                    clearTimeLabel.text = RelayRunClock.HasLastClear
+                        ? RelayRunClock.FormatTime(RelayRunClock.LastClearSeconds)
+                        : "--:--.--";
+                if (bestTimeLabel != null)
+                    bestTimeLabel.text = RelayRunClock.HasBest
+                        ? RelayRunClock.FormatTime(RelayRunClock.BestSeconds)
+                        : "--:--.--";
+                if (recordLabel != null)
+                    recordLabel.text = RelayRunClock.HasLastClear && RelayRunClock.LastWasRecord
+                        ? "NEW BEST" : "";
+            }
         }
 
         public void OnMusicVolumeChanged(float value)
@@ -90,6 +122,18 @@ namespace RelayYard
         {
             progressLabel = label;
             musicVolumeSlider = volume;
+            useCanvasUI = true;
+        }
+
+        public void EditorBindModernUI(Text status, Text time,
+            Text best, Text clear, Text newRecord)
+        {
+            progressLabel = status;
+            currentTimeLabel = time;
+            bestTimeLabel = best;
+            clearTimeLabel = clear;
+            recordLabel = newRecord;
+            musicVolumeSlider = null;
             useCanvasUI = true;
         }
 #endif

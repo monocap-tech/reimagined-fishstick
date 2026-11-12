@@ -22,6 +22,12 @@
           "type": "Button",
           "id": "7e173b4b-b314-4969-9c53-22ab48653194",
           "expectedControlType": "Button"
+        },
+        {
+          "name": "ResetHold",
+          "type": "Button",
+          "id": "8278df41-921c-46c3-9542-18f72fe17791",
+          "expectedControlType": "Button"
         }
       ],
       "bindings": [
@@ -78,6 +84,12 @@
           "id": "42b93f61-fcf4-4f66-99aa-9248f5a3bef3",
           "path": "<Keyboard>/escape",
           "action": "Pause"
+        },
+        {
+          "name": "",
+          "id": "e9a825f6-66b1-45a1-befe-23465c8130f4",
+          "path": "<Keyboard>/r",
+          "action": "ResetHold"
         }
       ]
     }

@@ -44,6 +44,8 @@ namespace RelayYard
                 return;
             if (gateRequiredOpen != null && !gateRequiredOpen.IsOpen)
                 return;
+            if (triggerScene == "Win" && RelayRunClock.Active != null)
+                RelayRunClock.Active.CompleteAtGoal();
             LoadScene(triggerScene);
         }
 
