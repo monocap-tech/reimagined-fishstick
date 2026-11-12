@@ -49,3 +49,7 @@ These are not yet verified on a Unity workstation:
 | Visual compatibility | Player/lamps remain readable, panels Lit, line and particles visible, no pink materials | NOT RUN |
 | Functional regression | Lights Out, gate lift, victory, pause, AudioDirector, restart unaffected | NOT RUN |
 | Windows player | Standalone build launches and above features pass outside Editor | NOT RUN |
+
+## Final timed-run/UI acceptance tests
+
+See [FINAL_UI_UPGRADE.md](FINAL_UI_UPGRADE.md) for the detailed 18-point checklist. Key pending checks: main-menu wording; top/bottom HUD layout; uninterrupted R hold and visually draining ring on release; mouse-click reset; timer pause/resume/goal-stop semantics; persisted best clear time without an attempt counter; both audio sliders, independent mutes, Reset Audio and menu/pause access; legacy Canvas disabled; standalone build. **All tests remain NOT RUN until verified locally.**

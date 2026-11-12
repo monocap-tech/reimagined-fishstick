@@ -65,3 +65,7 @@ Stable playable checkpoint: `cpsc386-project2-relay-yard` at `df248b0`
 ## Limitations
 
 This code has been reviewed at the source level, but **Unity Editor compilation, on-screen appearance, package import, and standalone build have not been executed by ChatGPT**. Record their real outcomes in `TESTING.md`; report any exact compile errors rather than guessing. The supplied course midterm used a 3D Point Light with URP/Lit material, whereas this migration uses the dedicated **URP 2D** Renderer and Light 2D—the correct adaptation for Relay Yard's sprites.
+
+## Follow-up interface pass
+
+The newer `Tools > Relay Yard > Upgrade to Final HUD and Audio` command is a **separate** in-place step. Run it after confirming the URP migration and preserving the converted scenes. See [FINAL_UI_UPGRADE.md](FINAL_UI_UPGRADE.md). It retains earlier Canvases inactive for rollback and introduces no new puzzle mechanics.

@@ -47,3 +47,7 @@ The detailed assignment and syllabus list **Friday, Nov 13, 2026, 11:59 PM** as 
 ## URP 2D experiment (test branch only)
 
 For the isolated renderer migration, see [URP_MIGRATION.md](URP_MIGRATION.md). It includes the non-destructive **Tools > Relay Yard > URP Test > Convert Saved Game Scene** step and post-conversion verification. The stable Project 2 branch remains unchanged. **Do not run the destructive scene assembler merely to acquire URP lights.**
+
+## Final UI / timed-run revision (URP test branch)
+
+After the URP scene conversion, run **Tools > Relay Yard > Upgrade to Final HUD and Audio** on the saved scenes. The tool backs them up to `Assets/InterfaceBackups`, adds separate modern Canvases, and deactivates the original ones. It adds an objective/time top band, a keyboard control and hold-R reset bottom band, completion best time, independent Music/SFX audio settings on MainMenu/Pause, and updated Win results. See [FINAL_UI_UPGRADE.md](FINAL_UI_UPGRADE.md) for behavior, safe execution steps and acceptance tests. This does not rebuild the puzzle or URP environment.
