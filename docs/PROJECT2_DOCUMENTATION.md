@@ -14,9 +14,9 @@ The design uses physical traversal to select puzzle inputs, event-driven state t
 
 ## Scenes and GameObjects
 
-- **MainMenu**: Main Camera / AudioListener, persistent AudioDirector instance, SceneUI menu/start and SceneLoader component, saved music-volume control.
+- **MainMenu**: Main Camera / AudioListener, persistent AudioDirector instance, SceneLoader and SceneUI, native Canvas Start, Quit Game, and saved music-volume slider after UI upgrade.
 - **Game**: Player (Dynamic Rigidbody2D, BoxCollider2D with Slick friction=0, Ground Probe, Input Action asset; child Visual with Animator); Solid Floor (RelayGround layer); Pressure Plate 1..6 (trigger collider, SwitchStyle, ParticleSystem); Indicator Light 1..6; Lights Out Controller; Exit Gate (solid collider + proximity halo + upward movement); separate Goal Beyond Gate with trigger-enabled SceneLoader; Seeded Perlin Signal (LineRenderer); Completion Burst; SceneUI HUD with SceneLoader.
-- **Win**: Main Camera / AudioListener, duplicate-guarded AudioDirector, SceneUI victory/replay and SceneLoader.
+- **Win**: Main Camera / AudioListener, duplicate-guarded AudioDirector, native Canvas victory/replay/menu/volume controls and SceneLoader.
 
 ## Source script inventory
 
@@ -30,9 +30,11 @@ The design uses physical traversal to select puzzle inputs, event-driven state t
 - **AudioDirector.cs**: singleton/DontDestroyOnLoad sound, distinct generated SFX and looping music, AudioMixer Music/SFX groups, PlayerPrefs volume.
 - **JumpFeedback.cs**: StateMachineBehaviour triggers jump feedback upon Animator state entry.
 - **SeededSignal.cs**: deterministic Perlin noise plus sine-wave visualizer drawn by a LineRenderer. Inspector exposes seed/noiseScale/noiseStrength/amplitude/speed.
-- **SceneUI.cs**: menu/game/win HUD, restart, music-volume UI; delegates scene transitions to SceneLoader.
-- **SceneLoader.cs**: course-style reusable scene transition component; UI loads named scenes and goal trigger loads Win only after the gate clears.
-- **RelayYardAssembler.cs**: Editor-only scene/data/Animator generator and setup audit using standard Assets/Scenes, Sprites, Materials, Data and Animations directories (not in player build).
+- **SceneUI.cs**: menu/game/win Canvas progress and music-volume UI, with legacy OnGUI fallback until in-place upgrade; delegates transitions to SceneLoader.
+- **SceneLoader.cs**: course-style reusable scene transition component; UI loads named scenes, exits desktop builds and goal trigger loads Win only after gate clears. Resets Time.timeScale on transitions.
+- **PauseManager.cs**: reuses Project 1's Escape action, hidden pause panel, Time.timeScale=0, Resume, Restart Puzzle and Quit to Menu; cleanup resets time scale.
+- **RelayYardAssembler.cs**: Editor-only full scene/data/Animator generator for fresh scenes; now installs native UI automatically. Destructive when rerun on existing scenes.
+- **RelayYardCanvasInstaller.cs**: Editor-only *in-place* Canvas/Pause installer; creates scene backups before modifying existing MainMenu, Game and Win.
 - **LightsOutPuzzleSelfTest.cs**: Editor-only known-solution and state-reachability checks.
 
 The prior prototype's RelayLedger/RelayController/RelayBeacon/RelayDefinition/SeededBackdrop remain legacy source files, not used in the new six-switch scene, until the final cleanup pass.
@@ -83,3 +85,7 @@ The detailed rubric and syllabus use **November 13, 2026, 11:59 PM** as the oper
 ## Submission and source structure
 
 Preserve the class-style `Assets/Scenes`, `Scripts`, `Audio`, `Prefabs`, `Materials`, `Data`, `Tiles`, `Input`, `Sprites`, `Animations`, `Resources`, and `Editor` folders. The playable build archive, source link/archive, and individually reviewed report are separate deliverables. See `SUBMISSION.md`. The initial `Assets/RelayYardGenerated` folder is legacy, not the revised assembler's output target.
+
+## Pause and navigation revisions (pending actual playtest)
+
+Project 1 `PauseManager` and `NeonRangeBuilder` provided the course precedent for asset-bound Escape input, Canvas/CanvasScaler, scene-safe `Time.timeScale`, a hidden pause overlay, and persistent `Button` callbacks. The revised Project 2 implementation includes `PauseManager`, an Escape action, and a non-destructive `RelayYardCanvasInstaller` that backs up existing scene files and upgrades the three UI layouts. The user must run the installer in their local Unity Editor; this repository commit does not itself contain the user's generated `.unity` scenes, so these controls are not yet established as working in their local instance. Report actual tests in the record above.

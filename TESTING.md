@@ -4,7 +4,13 @@ These are **acceptance tests, not claims of a passing Unity run**. Run them in U
 
 | Area | Acceptance criterion | Status |
 |---|---|---|
-| Unity import | Input System enabled, assets compile without red errors | NOT RUN |
+| Unity import | Input System and Unity UI packages enabled; all scripts compile without red errors | NOT RUN |
+| Scene preservation | Before running the in-place UI upgrader, original Game/MainMenu/Win scenes are copied into Assets/SceneBackups and remain recoverable | NOT RUN |
+| Native Canvas UI | MainMenu/Game/Win each contain Relay Yard Canvas and EventSystem with InputSystemUIInputModule; no duplicate OnGUI overlay | NOT RUN |
+| Pause / Resume | Escape pauses time, movement, gate animation and procedural waveform; Escape again and Resume button restore timeScale=1 | NOT RUN |
+| Pause navigation | Restart Puzzle and Quit to Menu work while paused; following scene runs at timeScale=1; replay and pause repeatedly | NOT RUN |
+| Menu controls | Start, Quit Game, and saved music-volume slider work; quit stops a desktop player (or Play Mode in Editor) | NOT RUN |
+| Responsive UI | Test 1280x720 and another 16:9 resolution; status, waveform, pause card and indicators stay legible | NOT RUN |
 | New scene | Regenerated Game has six distinct plates and six distinct lights, safe gaps, a single floor, solid gate plus separate exit | NOT RUN |
 | Logic-only test | Tools > Relay Yard > Validate Six-Switch Logic logs PASS for solution 2-4-6, all 64 configurations, reversibility | NOT RUN |
 | Puzzle correctness | Press i toggles i, i-1, i+1 (clamped to ends); step-on once, standing still does not retrigger; leaving and returning does | NOT RUN |
@@ -25,4 +31,4 @@ These are **acceptance tests, not claims of a passing Unity run**. Run them in U
 | Docs | Individually reviewed DOCX/PDF with script inventory, scenes, design decisions, accurate AI/third-party disclosures | NOT RUN |
 | Canvas | Standalone ZIP, source link, documentation submitted; same build posted in Peer Review 2 | NOT RUN |
 
-Known potential defects to test first: plate trigger overlap at takeoff/landing; ability to make the prescribed jumps; Visual Animator parameter transitions; halo appearance with Built-In; particle rendering; and physical gate collision while lifting.
+Known potential defects to test first: UI package import and Canvas button wiring; pause toggling after scene changes; plate trigger overlap at takeoff/landing; prescribed jumps; Animator transitions; halo appearance with Built-In; particle rendering; and gate collision while lifting. None are marked passed without actual testing.

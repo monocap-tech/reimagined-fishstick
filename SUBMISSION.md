@@ -43,3 +43,7 @@ Note that a previously generated folder `Assets/RelayYardGenerated/` may remain 
 The source contains an independent `SceneLoader.cs`, analogous to the *Lantern Dash* study guide arrangement: the Menu/Game/Win UI components invoke its named scene load methods; the goal has a trigger-configured instance that loads Win only after the solid gate has lifted. `ExitGoal.cs` remains as a legacy script for now and is not attached by the updated assembler.
 
 Update `TESTING.md` after actual editor and standalone tests; the presence of the files and folder tree alone does not constitute a passing build. AI assistance must be disclosed in the final individually reviewed documentation, as required by the course syllabus.
+
+## Before producing the final source archive
+
+After running **Tools > Relay Yard > Upgrade UI In Existing Scenes** and testing, add the newly saved `Assets/Scenes/*.unity`, `Assets/SceneBackups` if desired, animation assets, ScriptableObjects, Materials, generated PNG, `RelayMixer.mixer`, and **all Unity `.meta` files** to the Project 2 branch. The remote branch currently holds primarily scripts and Editor tooling; it is not yet a complete self-contained source project. Verify no Unity local work is overwritten with a subsequent destructive rebuild.

@@ -26,7 +26,7 @@ A one-room 2D Lights Out puzzle-platformer. Walk across six **separated** pressu
 
 ## How to run
 
-Read **ASSEMBLY.md**, **TESTING.md**, and **SUBMISSION.md**. In Unity after pulling this branch run **Tools > Relay Yard > Assemble Lights Out Room**. This overwrites the three generated scenes; commit manually generated scenes and all .meta files after successful testing.
+Read **ASSEMBLY.md**, **TESTING.md**, and **SUBMISSION.md**. **For the already working local scenes, use Tools > Relay Yard > Upgrade UI In Existing Scenes**, which saves backups and adds Canvas menus plus pause without regenerating gameplay. Use Assemble Lights Out Room ONLY for a brand-new project, because it overwrites all three scenes and their generated assets. Commit manually generated scenes and all .meta files after successful testing.
 
 ## Source and submission
 
@@ -35,3 +35,11 @@ Project 2 is on branch [cpsc386-project2-relay-yard](https://github.com/monocap-
 Submit (a) independently tested Windows/WebGL build ZIP, (b) completed source branch or source archive, and (c) your own completed DOCX/PDF technical documentation, with disclosures and credits. Keep the separate hand-in files in the structure described in SUBMISSION.md, and preserve standard course-style Assets folders. Post the same build for peer review.
 
 The detailed assignment and syllabus list **Friday, Nov 13, 2026, 11:59 PM** as the due date; use that rather than relying on the module's later overview date.
+
+## Project 1 UI features restored
+
+- Gameplay/Pause is an Input Actions binding on Escape; PauseManager uses Time.timeScale=0, Resume restores 1, and scene changes cannot carry a paused state.
+- Native Canvas/CanvasScaler and InputSystemUIInputModule-based menu, HUD, victory and pause interface, replacing OnGUI after scene upgrade.
+- Gameplay pause has Resume, Restart Puzzle and Quit to Menu; MainMenu has Start and Quit Game; victory has Play Again and Main Menu; music volume slider remains persisted.
+- The upgrade command is **non-destructive to gameplay** and backs up `Assets/Scenes/*.unity` to `Assets/SceneBackups/`. Existing prior `Relay Yard Canvas` objects are kept on repeated runs.
+- Unity UI package `com.unity.ugui` is explicitly installed via Packages/manifest.json, like Project 1.

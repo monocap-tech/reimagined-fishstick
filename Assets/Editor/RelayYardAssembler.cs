@@ -127,12 +127,15 @@ namespace RelayYard.EditorTools
                 new EditorBuildSettingsScene(SceneFolder + "/Game.unity", true),
                 new EditorBuildSettingsScene(SceneFolder + "/Win.unity", true)
             };
+            if (!RelayYardCanvasInstaller.InstallForNewScenes())
+                Debug.LogError("[Relay Yard] Generated scenes saved, but Canvas UI installation failed. " +
+                               "Resolve Console errors and run Tools > Relay Yard > Upgrade UI In Existing Scenes.");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             EditorSceneManager.OpenScene(SceneFolder + "/MainMenu.unity");
             EditorUtility.DisplayDialog("Relay Yard",
                 "Six separate pressure plates, six indicator lights, Lights Out logic, a sliding gate, " +
-                "a goal trigger, animation, particles, and a Perlin signal trace are generated. " +
+                "a goal trigger, animation, particles, a Perlin signal, Canvas menus and pause overlay are generated. " +
                 "Create Resources/RelayMixer.mixer with Music and SFX groups, audit, and then PLAYTEST.",
                 "OK");
         }
