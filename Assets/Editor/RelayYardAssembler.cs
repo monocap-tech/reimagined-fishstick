@@ -25,6 +25,10 @@ namespace RelayYard.EditorTools
         public static void AuditGeneratedProject()
         {
             int failures = 0;
+#if !ENABLE_INPUT_SYSTEM
+            Debug.LogError("[Relay Yard Audit] Active Input Handling is not set to Input System Package (New) or Both.");
+            failures++;
+#endif
             InputActionAsset input = AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
             if (input == null || input.FindActionMap("Gameplay", false) == null)
             {
