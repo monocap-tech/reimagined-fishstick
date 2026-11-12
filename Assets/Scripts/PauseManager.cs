@@ -13,6 +13,7 @@ namespace RelayYard
         [SerializeField] private InputActionAsset controls;
         [SerializeField] private GameObject pausePanel;
         [SerializeField] private SceneLoader sceneLoader;
+        [SerializeField] private AudioSettingsPanel audioSettings;
 
         private InputAction pauseAction;
         private bool isPaused;
@@ -55,6 +56,7 @@ namespace RelayYard
 
         public void Resume()
         {
+            if (audioSettings != null) audioSettings.Close();
             isPaused = false;
             Time.timeScale = 1f;
             if (pausePanel != null) pausePanel.SetActive(false);
@@ -83,11 +85,13 @@ namespace RelayYard
         private void OnDestroy() => Time.timeScale = 1f;
 
 #if UNITY_EDITOR
-        public void EditorConfigure(InputActionAsset input, GameObject panel, SceneLoader loader)
+        public void EditorConfigure(InputActionAsset input, GameObject panel, SceneLoader loader,
+            AudioSettingsPanel settings = null)
         {
             controls = input;
             pausePanel = panel;
             sceneLoader = loader;
+            audioSettings = settings;
         }
 #endif
     }
