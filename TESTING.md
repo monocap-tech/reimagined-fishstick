@@ -32,3 +32,20 @@ These are **acceptance tests, not claims of a passing Unity run**. Run them in U
 | Canvas | Standalone ZIP, source link, documentation submitted; same build posted in Peer Review 2 | NOT RUN |
 
 Known potential defects to test first: UI package import and Canvas button wiring; pause toggling after scene changes; plate trigger overlap at takeoff/landing; prescribed jumps; Animator transitions; halo appearance with Built-In; particle rendering; and gate collision while lifting. None are marked passed without actual testing.
+
+## Additional checks on cpsc386-project2-urp-test
+
+These are not yet verified on a Unity workstation:
+
+| Test | Expected result | Status |
+|---|---|---|
+| URP package | Universal RP 17.6.0 installed, Editor compiles | NOT RUN |
+| Pipeline | Graphics and current Quality use URP Asset with 2D Renderer | NOT RUN |
+| Scene backup | Assets/URPBackups/Game-BeforeURP2D.unity exists | NOT RUN |
+| Player lantern | Player/Lantern Light 2D follows player; physical circular attenuation | NOT RUN |
+| Gate receives light | Gate Lit shader illuminates partially on approach, dims on retreat | NOT RUN |
+| No fake halo | Gate Proximity Halo disabled; use2DLighting on ExitGate | NOT RUN |
+| Room boundaries | Left/right solid walls prevent escaping; goal still reachable | NOT RUN |
+| Visual compatibility | Player/lamps remain readable, panels Lit, line and particles visible, no pink materials | NOT RUN |
+| Functional regression | Lights Out, gate lift, victory, pause, AudioDirector, restart unaffected | NOT RUN |
+| Windows player | Standalone build launches and above features pass outside Editor | NOT RUN |

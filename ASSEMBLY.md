@@ -1,5 +1,7 @@
 # Relay Yard — Six-Switch Room: Unity assembly and build guide
 
+> **URP experiment:** On branch `cpsc386-project2-urp-test`, do **not** follow the regeneration instructions below. Follow [URP_MIGRATION.md](URP_MIGRATION.md) instead and convert the saved Game scene in place.
+
 ## Safety and preparation
 
 1. Keep using your short local project path: C:\Users\user\Documents\Project 2\RelayYard.

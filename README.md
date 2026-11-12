@@ -43,3 +43,7 @@ The detailed assignment and syllabus list **Friday, Nov 13, 2026, 11:59 PM** as 
 - Gameplay pause has Resume, Restart Puzzle and Quit to Menu; MainMenu has Start and Quit Game; victory has Play Again and Main Menu; music volume slider remains persisted.
 - The upgrade command is **non-destructive to gameplay** and backs up `Assets/Scenes/*.unity` to `Assets/SceneBackups/`. Existing prior `Relay Yard Canvas` objects are kept on repeated runs.
 - Unity UI package `com.unity.ugui` is explicitly installed via Packages/manifest.json, like Project 1.
+
+## URP 2D experiment (test branch only)
+
+For the isolated renderer migration, see [URP_MIGRATION.md](URP_MIGRATION.md). It includes the non-destructive **Tools > Relay Yard > URP Test > Convert Saved Game Scene** step and post-conversion verification. The stable Project 2 branch remains unchanged. **Do not run the destructive scene assembler merely to acquire URP lights.**
