@@ -35,7 +35,7 @@ An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The 
 | `ResetHoldController.cs` | R hold duration, release cancellation, radial progress and click reset |
 | `PauseManager.cs` | Time scale, Escape toggling and pause navigation |
 | `SceneUI.cs` | HUD status and timer/results text updates |
-| `AudioDirector.cs` | Persistent generated audio, separate Music/SFX volume/mutes, PlayerPrefs |
+| `AudioDirector.cs` | Persistent generated music and interaction tones, optional imported WAV puzzle-clear cue, separate Music/SFX volume/mutes, PlayerPrefs |
 | `AudioSettingsPanel.cs` | Audio sliders/buttons and synchronized labels |
 | `SeededSignal.cs` | Inspector-configured Perlin/sine procedural waveform |
 | `JumpFeedback.cs` | Animator StateMachineBehaviour for jump feedback |
@@ -46,7 +46,7 @@ An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The 
 - **State and events:** Pure C# LightsOutBoard plus MonoBehaviour controller. Switch contacts call Press, and solved state unlocks the gate.
 - **ScriptableObjects:** Distinct `CyanSwitch.asset` and `GoldSwitch.asset` store switch presentation options.
 - **Animation:** Animator with idle, walk, run, jump and fall animation clips; state-based jump feedback.
-- **Particles/audio:** Short scripted particle bursts for plates/jump/solve and original procedurally synthesized sounds/music.
+- **Particles/audio:** Short scripted particle bursts for plates/jump/solve; procedurally synthesized background music and basic interaction cues; an optional externally supplied WAV puzzle-clear jingle loaded through Resources and played by the SFX AudioSource.
 - **Procedural behavior:** Perlin-driven animated signal visualizer, independent of logical puzzle state.
 - **Rendering/UI:** URP 2D Renderer with Lit/Unlit sprites and player-mounted Light 2D; native Canvas UI with interactive audio settings and radial reset indication.
 - **Persistence:** Best clear time and audio preferences stored locally through PlayerPrefs.
@@ -65,7 +65,7 @@ An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The 
 
 ## 6. Asset sources, attribution and assistance
 
-The project uses Unity and its official packages. Core geometric art and the reset-ring graphic are generated locally; `AudioDirector` synthesizes its background music and effect tones at runtime rather than distributing prerecorded third-party sounds. Review the final `Assets/` contents to confirm whether any additional imported asset requires attribution.
+The project uses Unity and its official packages. Core geometric art and the reset-ring graphic are generated locally. `AudioDirector` synthesizes background music and standard interaction effects at runtime. A user-provided audio file titled **Grasshopper-Manufacture-Jingle.m4a** was converted into a short WAV as the candidate puzzle-clear sound; it is not yet committed to GitHub. **Attribution, provenance, licensing and permission to distribute must be verified before placing it in a public build/source archive.** If permission is unavailable, retain or replace it with an original/licensed cue. Review all final imported assets before hand-in.
 
 **AI-assistance disclosure (must be retained and personally reviewed):** ChatGPT was used substantially during design iteration, research, C# scripting, project structuring, troubleshooting, URP migration and UI tooling, acceptance-test planning, and drafting this documentation outline. The author reviewed, integrated, debugged and tested the resulting work in Unity. The final report should identify assistance in the form required by the instructor, and independently explain the author's actual decisions and testing.
 

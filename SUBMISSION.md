@@ -21,6 +21,7 @@ Project2-Submission/
 - [ ] Open **`cpsc386-project2-release`** in Unity and allow a clean reimport.
 - [ ] Verify the current three scenes, their scripts, animations and shader assets are intact after removing generator scripts/unused prototype assets.
 - [ ] Verify any rubric requirement for an **AudioMixer**. `Assets/Resources/RelayMixer.mixer` is not currently present in this repository. If required, create it in Unity with groups exactly **Music** and **SFX**, verify runtime routing, then commit it and its `.meta` file.
+- [ ] Import the selected `Assets/Resources/PuzzleClear.wav` and its Unity-generated `.meta` file, confirm the jingle plays once on puzzle solve and obeys SFX volume/mute. Check its copyright/license before redistributing.
 - [ ] Run full gameplay and audio regression tests, including hold R, pause, gate animation, goal trigger overlap and best-time persistence.
 - [ ] Build from the **release branch** with Build Profiles (MainMenu, Game, Win). Unzip to a separate folder and launch the player **outside Unity**.
 - [ ] Verify no missing references/Console errors, no development Editor utilities, and a clean source tree.

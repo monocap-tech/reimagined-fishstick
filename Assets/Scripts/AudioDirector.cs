@@ -61,11 +61,19 @@ namespace RelayYard
                 }
             }
 
-            // Original, synthesized sounds; no third-party audio assets.
+            // Music and the interaction cues are generated procedurally.
+            // The puzzle-clear cue is a short user-provided WAV imported at
+            // Assets/Resources/PuzzleClear.wav. Retain an audible fallback until
+            // the clip is installed (for example, in fresh source checkouts).
             musicSource.clip = CreateMusic();
             jumpClip = MakeTone("Jump", 0.18f, 420f, 720f);
             relayClip = MakeTone("Relay", 0.28f, 600f, 980f);
-            unlockClip = MakeTone("Unlock", 0.6f, 310f, 720f);
+            unlockClip = Resources.Load<AudioClip>("PuzzleClear");
+            if (unlockClip == null)
+            {
+                Debug.LogWarning("AudioDirector: PuzzleClear.wav was not found in Assets/Resources; using synthesized unlock cue.");
+                unlockClip = MakeTone("Unlock", 0.6f, 310f, 720f);
+            }
 
             musicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, DefaultMusicVolume));
             sfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, DefaultSfxVolume));

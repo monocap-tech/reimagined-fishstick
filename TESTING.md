@@ -13,6 +13,7 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 | Mouse reset | Immediate restart with new timer | Editor verification recommended |
 | Pause | Time freezes, resumes; navigation works | Screenshots and reported playtest |
 | Audio | Music/SFX slider, mute, reset, persistence | Settings screenshots; persistence across app restart still needs explicit test |
+| Imported puzzle-clear cue | Resources/PuzzleClear.wav plays once on 6/6 via SFX mixer channel, without affecting the gate animation or exit | **PENDING — WAV must be imported locally** |
 | Best time | Stops at goal, retains fastest success only | Results screenshots; persistence across app restart still needs explicit test |
 | URP lighting | 2D point light falloff, no missing/pink materials | Gameplay screenshots |
 | Release cleanup | No missing scene/script/assets after removal | **NOT TESTED** |
@@ -24,7 +25,7 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 ## Final manual acceptance sequence
 
 1. Open MainMenu and verify Audio controls and Reset Audio.
-2. Play Game; verify all switch interactions, jump, URP lighting and controls.
+2. Play Game; verify all switch interactions, jump, URP lighting and controls. Confirm the imported puzzle-clear jingle plays on 6/6, obeys SFX volume/mute, and is heard through the SFX mixer group once configured.
 3. Enter the exit flag before the final board state where possible. Solve the board while overlapping; verify Win triggers without leaving/re-entering.
 4. Confirm the gate visually rises gradually; no snap.
 5. Hold and release R early; ring drains and the board does not reset. Hold past threshold; board and timer reset. Click RESET; same state reset.

@@ -40,7 +40,9 @@ The source excludes historical scene backups, unused prototype assets, and one-t
 - The six-switch board logic is a pure C# model (`LightsOutBoard`). The MonoBehaviour controller updates visible indicators and unlocks the gate when the model is solved.
 - The gate rises gradually after unlock. Exit eligibility changes immediately at 6/6; `SceneLoader` handles both trigger entry and continued overlap, so a player already standing in the goal can complete the level.
 - The player Light 2D provides spatial illumination to URP-lit surfaces. Gameplay sprites that need constant legibility use appropriate unlit materials.
-- The persistent `AudioDirector` generates original music and sounds procedurally, with separate Music and SFX channels. It uses Music/SFX AudioMixer groups when a compatible `Assets/Resources/RelayMixer.mixer` is present. **The mixer asset is not currently committed and must be checked against the assignment requirements before hand-in.**
+- The persistent `AudioDirector` synthesizes background music and basic interaction cues, and can load a replacement puzzle-clear sound from `Assets/Resources/PuzzleClear.wav`. If absent, it falls back to its previous synthesized unlock tone. This cue uses the SFX AudioSource and responds to existing SFX volume/mute controls.
+- `AudioDirector` routes Music and SFX through mixer groups when a compatible `Assets/Resources/RelayMixer.mixer` exists. **The mixer asset is not currently committed and must be checked against the assignment requirements before hand-in.**
+- The puzzle-clear WAV is derived from a user-supplied jingle and is **not yet in the GitHub source**. Check ownership, attribution, and distribution permission before including it in a public repository or submission archive.
 
 ## Submission
 
