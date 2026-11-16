@@ -11,14 +11,14 @@ Proposed hand-in folder (local only; not committed to source Git):
 ```text
 Project2-Submission/
   RelayYard-Windows-x64.zip
-  RelayYard-WebGL.zip            # optional alternate; or public hosting URL
-  RelayYard-Documentation.pdf
+  RelayYard-Web.zip             # optional second build; also published on Unity Play
+  RelayYard_Project2_MLA_2026.pdf
   SOURCE.txt
 ```
 
 ## Release preparation
 
-**Current status:** Windows x64 and WebGL builds are developer-validated. Actual build URLs/ZIP names, detailed platform test records and instructor consent for third-party materials still need to be entered accurately.
+**Current status:** Windows x64 and WebGL builds are developer-validated. Windows output folder: `RelayYard-Windows`; Windows archive: `RelayYard-Windows-x64.zip`. Web output folder: `RelayYard-Web`; Web archive: `RelayYard-Web.zip`. The [Unity Play page](https://play.unity.com/en/games/9dd35762-b4d6-48e1-8354-5b90646dbff1/relayyard-web) was provided by the developer. Filenames are grounded in the Explorer screenshot; archive integrity and public access were not independently verified. Browser details, the build-source SHA and instructor consent remain to be recorded.
 
 - [ ] Confirm third-party asset **prior instructor consent**, as required by the syllabus, and document sources, copyright, license and extent of use for the MusMus audio, modified DotGothic16 font, and puzzle-clear jingle. See `THIRD_PARTY_NOTICES.md`.
 - [ ] Confirm the instructor's **Unity 6 LTS (2024)** grading environment can open the **Unity 6000.6.4f1** source project; running player binaries does not establish source compatibility.
@@ -32,9 +32,11 @@ Project2-Submission/
 - [x] **Windows x64 build validated**, as reported by the developer; detailed test log and exact archive name not yet recorded.
 - [x] **WebGL build validated**, as reported by the developer; tested browser, archive name and hosted URL (if any) not yet recorded.
 - [ ] Package the complete Windows output as a ZIP; package WebGL as a ZIP or supply an accessible public hosted link.
-- [ ] Record build-source commit SHA, platform/browser versions, exact archive names, and relevant testing evidence.
+- [ ] Record the build-source commit SHA, OS/browser versions and relevant testing evidence (archive names are now recorded from Explorer).
+- [ ] Verify the contents and nonzero sizes of both ZIP files before uploading. Explorer showed an inconsistent size readout for the selected `RelayYard-Web.zip`; inspect Properties or open the archive to confirm.
 - [ ] Verify no missing references/Console errors, no development Editor utilities, and a clean source tree.
-- [ ] Personally review and finalize the **current six-switch** DOCX/PDF technical report based on `docs/PROJECT2_DOCUMENTATION.md`; do **not** submit the superseded three-relay Word draft. Include complete third-party attribution, instructor consent record, and substantial ChatGPT-assistance disclosure.
+- [x] Generate current six-switch report in MLA format: `RelayYard_Project2_MLA_2026.docx` and `RelayYard_Project2_MLA_2026.pdf` (delivered separately from GitHub).
+- [ ] Personally review the MLA report and verify instructor asset permission before uploading; do **not** submit the superseded three-relay Word draft.
 - [ ] Provide the release branch URL and exact **build-source SHA**, actual build ZIP(s) or URL, and final report as the three deliverables in a single Canvas submission.
 - [ ] Post the **same graded build** to Project 2 Peer Review; syllabus lists review deadline **Wednesday, November 18, 2026** and requires playing/reviewing at least three classmates' builds.
 

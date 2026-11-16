@@ -6,6 +6,8 @@ Relay Yard is a one-room 2D puzzle-platformer. Walking onto a floor plate toggle
 
 The project uses Unity's Universal Render Pipeline with a 2D Renderer and a player-carried Light 2D.
 
+**Play the Web build:** [Relay Yard on Unity Play](https://play.unity.com/en/games/9dd35762-b4d6-48e1-8354-5b90646dbff1/relayyard-web). The developer has validated the browser and Windows x64 builds.
+
 ## Instructor quick start
 
 The [Grader's guide](GRADING_GUIDE.md) gives the exact scene order, controls, a quick puzzle solution, and links to code for the project's eight technical features. [Submission checklist](SUBMISSION.md), [test record](TESTING.md), [technical report draft](docs/PROJECT2_DOCUMENTATION.md), and [third-party notices](THIRD_PARTY_NOTICES.md) are separate.
@@ -53,6 +55,6 @@ The source excludes historical scene backups, unused prototype assets, and one-t
 
 ## Submission
 
-See `SUBMISSION.md` for the three deliverables and `TESTING.md` for the remaining release checks. The up-to-date six-switch report source is `docs/PROJECT2_DOCUMENTATION.md`; older Word drafts describe an obsolete three-relay prototype and should not be submitted.
+See `SUBMISSION.md` for the three deliverables and `TESTING.md` for the remaining release checks. The up-to-date six-switch report source is `docs/PROJECT2_DOCUMENTATION.md`; the separately prepared **MLA-formatted** final report is `RelayYard_Project2_MLA_2026.docx` / `.pdf`. Older Word drafts describe an obsolete three-relay prototype and should not be submitted.
 
 **Build verification:** The developer reports both Windows x64 and WebGL builds validated. Exact ZIP filenames, Web hosting URL (if used), the SHA of the game source used to build each package, and a per-test log are not recorded. The validated binaries do not establish that Unity 6000.6.4f1 source opens in the instructor's specified Unity 6 LTS (2024) editor. Course policy requires prior instructor consent for third-party assets; this consent remains undocumented. Substantial ChatGPT assistance and the asset provenance are documented in the project report and notices.

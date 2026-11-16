@@ -59,7 +59,7 @@ The eight implemented feature areas are cross-referenced with direct links and a
 
 ## 5. Build and testing evidence
 
-**Developer-confirmed results:** Windows x64 and WebGL builds were both validated. This is a platform-level report; detailed browser/OS versions, archive names, hosted Web URL, exact source commit for each build, and individual acceptance outcomes have not been supplied. See `TESTING.md` for the acceptance checklist.
+**Developer-confirmed results:** Windows x64 and WebGL builds were both validated. The screenshot identifies `RelayYard-Windows` and `RelayYard-Web` output folders and `RelayYard-Windows-x64.zip` and `RelayYard-Web.zip` archives. The developer provided a Unity Play page: https://play.unity.com/en/games/9dd35762-b4d6-48e1-8354-5b90646dbff1/relayyard-web. This is a platform-level report, not a per-case test transcript. Browser/OS versions, exact source commit for each build, archive integrity and individual acceptance results have not been supplied. See `TESTING.md` for the acceptance checklist.
 
 **Editor-version caveat:** `ProjectSettings/ProjectVersion.txt` records Unity **6000.6.4f1**. The CPSC 386 syllabus specifies Unity **6 LTS (2024)** for grading. Success of the binaries does not prove that the source project can be imported into that editor version.
 
@@ -70,8 +70,8 @@ The eight implemented feature areas are cross-referenced with direct links and a
 - Gate/goal trigger correction: Reported working after implementing `OnTriggerStay2D` alongside `OnTriggerEnter2D` and restoring gradual gate motion.
 - Cleaned release branch import: **Not yet verified.**
 - AudioMixer group routing: **Not yet verified.**
-- Windows x64 build: **developer-reported validated**; exact ZIP name, source SHA and per-case test report not yet supplied.
-- WebGL build: **developer-reported validated**; exact browser, package or URL and per-case test report not yet supplied.
+- Windows x64 build: **developer-reported validated**, `RelayYard-Windows-x64.zip`; build-source SHA, archive integrity and per-case test report still unverified.
+- WebGL build: **developer-reported validated**, `RelayYard-Web.zip`, with Unity Play URL above; browser version, archive integrity and per-case test report still unverified.
 - Tested release commit: **To fill in.**
 
 ## 6. Asset sources, attribution and assistance
@@ -85,9 +85,9 @@ The project uses Unity and its official packages. Core geometric art and the res
 ## 7. Submission record
 
 - Source URL and commit: **To fill in.**
-- Validated Windows x64 archive and actual build-source commit: **To fill in.**
-- Validated WebGL archive or Unity Play URL and tested browser: **To fill in.**
-- Documentation PDF/DOCX: **To fill in.**
+- Validated Windows x64 folder/archive: `RelayYard-Windows` / `RelayYard-Windows-x64.zip`. Actual build-source SHA: **To fill in.**
+- Validated Web folder/archive: `RelayYard-Web` / `RelayYard-Web.zip`. Unity Play URL: https://play.unity.com/en/games/9dd35762-b4d6-48e1-8354-5b90646dbff1/relayyard-web. Tested browser/version: **To fill in.**
+- Documentation PDF/DOCX: `RelayYard_Project2_MLA_2026.pdf` / `RelayYard_Project2_MLA_2026.docx` (MLA-formatted deliverables prepared separately).
 - Platform/build test date: **To fill in.**
 - Third-party instructor consent record: **To fill in.**
 - Peer review / upload confirmation: **To fill in.**

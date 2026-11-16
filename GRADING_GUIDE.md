@@ -4,7 +4,7 @@
 **Source branch:** [cpsc386-project2-release](https://github.com/monocap-tech/reimagined-fishstick/tree/cpsc386-project2-release)  
 **Project editor version:** Unity **6000.6.4f1** (recorded in [ProjectSettings/ProjectVersion.txt](ProjectSettings/ProjectVersion.txt)).
 
-> **Build status:** Windows x64 and WebGL builds are developer-validated. Exact artifact names, optional hosted URL and per-case test evidence are pending in the submission record. Unity 6000.6.4f1 source compatibility with the instructor's Unity 6 LTS environment is not yet established.
+> **Build status:** Windows x64 (`RelayYard-Windows-x64.zip`) and WebGL (`RelayYard-Web.zip`) builds are developer-validated. [Play the browser version on Unity Play](https://play.unity.com/en/games/9dd35762-b4d6-48e1-8354-5b90646dbff1/relayyard-web). The source project was authored with Unity 6000.6.4f1; instructor Unity 6 LTS backward-compatibility is not established.
 
 ## Open and play
 
@@ -50,4 +50,4 @@ This is an implementation index, not a claim that the game has been independentl
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists imported music, font, sound and license sources. **Course policy separately requires prior instructor consent to third-party assets, including free assets. Consent has not been documented here.**
 - The final personally reviewed report must identify substantial ChatGPT assistance in design, coding, troubleshooting, testing support and documentation.
 
-**Still to record before submission:** verified ZIP names or Web URL, source commit used for both builds, platform specifics, and instructor approval for third-party material. The current six-switch report supersedes old three-relay Word drafts.
+**Build identities recorded:** Windows folder `RelayYard-Windows` / archive `RelayYard-Windows-x64.zip`; Web folder `RelayYard-Web` / archive `RelayYard-Web.zip`; Unity Play URL above. **Remaining:** verify actual ZIP contents/access, the precise source commit used for both builds, tested browser/OS, and instructor approval for third-party material. The current **MLA-formatted** report is `RelayYard_Project2_MLA_2026.docx` / `.pdf`, replacing older three-relay drafts.

@@ -1,6 +1,6 @@
 # Relay Yard — release verification
 
-**Evidence boundary:** The developer reports both Windows x64 and WebGL builds **validated**. This platform-level report is not an individual pass record for every test below. Exact browser/OS versions, build ZIP names, hosted URL, build-source SHA and per-test logs have not been supplied.
+**Evidence boundary:** The developer reports both Windows x64 and WebGL builds **validated**. This platform-level report is not an individual pass record for every test below. Exact browser/OS versions, build-source SHA and per-test logs have not been supplied. Build folders, archive names and the hosted Unity Play URL have now been supplied by the developer; archive bytes and public availability were not inspected.
 
 | Area | Required behavior | Current evidence |
 |---|---|---|
@@ -46,7 +46,7 @@ Record individual test outcomes here when available; platform-level validation a
 - Tested release source commit: **PENDING — record the SHA used for the binaries, not a subsequent docs-only commit**.
 - Source import into the grader's Unity 6 LTS version: **NOT VERIFIED**.
 - AudioMixer verification: **PENDING**.
-- Windows x64 build: **developer-reported validated; ZIP name, build SHA, and per-test log outstanding**.
-- WebGL build: **developer-reported validated; browser version, ZIP/URL, and per-test log outstanding**.
-- Build archives/hosted URL: **NOT YET RECORDED**.
-- Report PDF/DOCX: **PENDING**.
+- Windows x64 build: **developer-validated**; folder `RelayYard-Windows`, archive `RelayYard-Windows-x64.zip`. Build SHA and test log outstanding.
+- WebGL build: **developer-validated**; folder `RelayYard-Web`, archive `RelayYard-Web.zip`; live page supplied: https://play.unity.com/en/games/9dd35762-b4d6-48e1-8354-5b90646dbff1/relayyard-web. Browser/version and test log outstanding.
+- ZIP integrity: **not independently checked**; selected Web ZIP's Explorer details and status line showed different size values.
+- Report PDF/DOCX: **MLA-formatted `RelayYard_Project2_MLA_2026.docx` and `.pdf` prepared; author review and Canvas submission pending**.
