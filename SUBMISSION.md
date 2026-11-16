@@ -17,15 +17,15 @@ Project2-Submission/
 
 ## Release preparation
 
-- [ ] Confirm the URP development checkpoint is preserved on `cpsc386-project2-urp-test`.
+- [x] Preserve the URP development checkpoint on `cpsc386-project2-urp-test`.
 - [ ] Open **`cpsc386-project2-release`** in Unity and allow a clean reimport.
 - [ ] Verify the current three scenes, their scripts, animations and shader assets are intact after removing generator scripts/unused prototype assets.
-- [ ] Verify any rubric requirement for an **AudioMixer**. `Assets/Resources/RelayMixer.mixer` is not currently present in this repository. If required, create it in Unity with groups exactly **Music** and **SFX**, verify runtime routing, then commit it and its `.meta` file.
-- [ ] Import the selected `Assets/Resources/PuzzleClear.wav` and its Unity-generated `.meta` file, confirm the jingle plays once on puzzle solve and obeys SFX volume/mute. Check its copyright/license before redistributing.
+- [x] Commit `Assets/Resources/RelayMixer.mixer`, its `.meta`, and Music/SFX groups. **Runtime assignment of the AudioSources to those groups still needs explicit verification.**
+- [x] Commit `Assets/Resources/PuzzleClear.wav` and its `.meta`. **Still verify the cue in the final player and resolve its copyright/distribution status.**
 - [ ] Run full gameplay and audio regression tests, including hold R, pause, gate animation, goal trigger overlap and best-time persistence.
 - [ ] Build from the **release branch** with Build Profiles (MainMenu, Game, Win). Unzip to a separate folder and launch the player **outside Unity**.
 - [ ] Verify no missing references/Console errors, no development Editor utilities, and a clean source tree.
-- [ ] Finish the DOCX/PDF technical report, attach valid screenshots/testing record, include third-party attributions and **disclose ChatGPT assistance** in the manner required by the syllabus.
+- [ ] Finish the DOCX/PDF technical report, attach valid screenshots/testing record, cite `THIRD_PARTY_NOTICES.md`, and **disclose ChatGPT assistance** in the manner required by the syllabus.
 - [ ] Prepare source URL and tested commit ID, then submit all three deliverables and any required peer-review copy.
 
-**Deadline recorded from course materials:** Friday, November 13, 2026, at 11:59 PM PST. Verify the course platform's instructions before uploading.
+**Original due date recorded from course materials:** Friday, November 13, 2026, at 11:59 PM PST (now past). Confirm the submission portal's current policy before uploading.

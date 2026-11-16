@@ -32,8 +32,9 @@ Main Menu and Pause both open **Audio** settings with independent Music/SFX volu
 - `Assets/Data/`: the cyan and gold SwitchStyle ScriptableObject assets.
 - `Assets/Materials/`, `Assets/Settings/`: physics and URP sprite materials, URP pipeline and 2D renderer.
 - `Assets/Sprites/`: shared source sprite and the reset-ring graphic.
+- `Assets/Font/`: a modified copy of DotGothic16 under the SIL Open Font License 1.1. See the notices and bundled OFL text.
 
-The source excludes historical scene backups, unused prototype assets, and one-time Editor generation/migration tools. The working development history remains on branch `cpsc386-project2-urp-test`. This release branch contains only the current game source and final documentation.
+The source excludes historical scene backups, unused prototype assets, and one-time Editor generation/migration tools. The working development history remains on branch `cpsc386-project2-urp-test`. This release branch contains the working game source and draft documentation; the final build and technical-report deliverables remain unverified.
 
 ## Technical notes
 
@@ -42,7 +43,7 @@ The source excludes historical scene backups, unused prototype assets, and one-t
 - The player Light 2D provides spatial illumination to URP-lit surfaces. Gameplay sprites that need constant legibility use appropriate unlit materials.
 - The persistent `AudioDirector` plays `MusMus-BGM-172.ogg` on **MainMenu**, then `MusMus-BGM-134.ogg` on **Game**. The gameplay track continues through **Win**, and the title track returns on **MainMenu**. Missing BGM assets fall back to a synthesized loop. Jump and plate cues remain synthesized; `Assets/Resources/PuzzleClear.wav` is loaded for the clear cue, with a synthesized fallback. The clear cue uses the SFX AudioSource and responds to SFX volume/mute controls.
 - `Assets/Resources/RelayMixer.mixer` is committed with Music and SFX groups. `AudioDirector` assigns the two sources to their matching groups. This routing still needs a runtime Unity/standalone verification.
-- The puzzle-clear WAV is derived from a user-supplied jingle and is **not yet in the GitHub source**. Check ownership, attribution, and distribution permission before including it in a public repository or submission archive.
+- The puzzle-clear WAV is **already committed** and originated from a supplied commercial jingle. Its distribution rights are unverified. The two MusMus OGG files are also committed; check their prohibition on standalone music redistribution. See `THIRD_PARTY_NOTICES.md` and `licenses/DotGothic16-OFL.txt`.
 
 ## Submission
 

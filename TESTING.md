@@ -13,15 +13,15 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 | Mouse reset | Immediate restart with new timer | Editor verification recommended |
 | Pause | Time freezes, resumes; navigation works | Screenshots and reported playtest |
 | Audio | Music/SFX slider, mute, reset, persistence | Settings screenshots; persistence across app restart still needs explicit test |
-| Imported puzzle-clear cue | Resources/PuzzleClear.wav plays once on 6/6 via SFX mixer channel, without affecting the gate animation or exit | **PENDING — WAV must be imported locally** |
+| Imported puzzle-clear cue | Resources/PuzzleClear.wav plays once on 6/6 via SFX mixer channel, without affecting the gate animation or exit | **ASSET COMMITTED — standalone test pending** |
 | Best time | Stops at goal, retains fastest success only | Results screenshots; persistence across app restart still needs explicit test |
 | URP lighting | 2D point light falloff, no missing/pink materials | Gameplay screenshots |
 | Release cleanup | No missing scene/script/assets after removal | **NOT TESTED** |
 | AudioMixer groups | Music and SFX mixer groups assigned as required | **ASSET PRESENT — runtime routing not yet confirmed** |
-| BGM transitions | MainMenu plays 172; Game plays 134; Win continues 134; returning to MainMenu restores 172 | **NOT TESTED** |
+| BGM transitions | MainMenu plays 172; Game plays 134; Win continues 134; returning to MainMenu restores 172 | **Reported working in Unity Editor on November 15, 2026; standalone test pending** |
 | Clean Unity import | No compile errors or missing references | **NOT TESTED on release branch** |
 | Standalone Windows build | External launch, full playthrough, audio, restart, win, quit | **NOT TESTED** |
-| Source/disclosure | Complete `.meta` set, source commit, reviewed report and AI citation | **PENDING** |
+| Source/disclosure | Complete `.meta` set, source commit, reviewed report, third-party credits and AI citation | **Meta audit passed; notices drafted; report pending** |
 
 ## Final manual acceptance sequence
 
