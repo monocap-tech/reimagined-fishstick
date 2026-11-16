@@ -20,7 +20,9 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 | AudioMixer groups | Music and SFX mixer groups assigned as required | **ASSET PRESENT — runtime routing not yet confirmed** |
 | BGM transitions | MainMenu plays 172; Game plays 134; Win continues 134; returning to MainMenu restores 172 | **Reported working in Unity Editor on November 15, 2026; standalone test pending** |
 | Clean Unity import | No compile errors or missing references | **NOT TESTED on release branch** |
-| Standalone Windows build | External launch, full playthrough, audio, restart, win, quit | **NOT TESTED** |
+| Windows build compilation | Unity Windows build process completes | **Reported successful by developer, November 15, 2026** |
+| Standalone Windows run | External launch, full playthrough, audio, restart, win, quit | **NOT YET REPORTED** |
+| WebGL build/browser run | Build completes, starts through HTTP or hosted URL, audio unlocks after user input, gameplay and UI work | **BUILD IN PROGRESS; not yet reported passed** |
 | Source/disclosure | Complete `.meta` set, source commit, reviewed report, third-party credits and AI citation | **Meta audit passed; notices drafted; report pending** |
 
 ## Final manual acceptance sequence
@@ -33,7 +35,8 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 6. Pause and resume; confirm game clock freezes while paused.
 7. Clear the game; compare Clear Time and Best Time. Restart and clear more slowly to verify only a faster result updates Best Time.
 8. Test Music/SFX volume and mute independently, then quit/relaunch and verify persistence.
-9. Build a Windows player and repeat the core sequence outside the Editor.
+9. Build a Windows player and repeat the core sequence **outside** the Editor; record Windows version, build folder, full playthrough and any errors.
+10. Build WebGL, serve over HTTP or publish to Unity Play, and repeat the game/UI/audio sequence, including browser autoplay and quit-button behavior.
 
 ## Delivery evidence
 
@@ -41,5 +44,7 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 - Tested release source commit: **PENDING**.
 - Clean release import result: **PENDING**.
 - AudioMixer verification: **PENDING**.
+- Windows Unity build: **Reported successful; standalone-player test and ZIP name pending**.
+- WebGL browser build: **In progress; completion/URL pending**.
 - Standalone build folder/ZIP: **PENDING**.
 - Report PDF/DOCX: **PENDING**.

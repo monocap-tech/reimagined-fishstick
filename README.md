@@ -6,6 +6,12 @@ Relay Yard is a one-room 2D puzzle-platformer. Walking onto a floor plate toggle
 
 The project uses Unity's Universal Render Pipeline with a 2D Renderer and a player-carried Light 2D.
 
+## Instructor quick start
+
+The [Grader's guide](GRADING_GUIDE.md) gives the exact scene order, controls, a quick puzzle solution, and links to code for the project's eight technical features. [Submission checklist](SUBMISSION.md), [test record](TESTING.md), [technical report draft](docs/PROJECT2_DOCUMENTATION.md), and [third-party notices](THIRD_PARTY_NOTICES.md) are separate.
+
+**Important:** This game's code is on branch [`cpsc386-project2-release`](https://github.com/monocap-tech/reimagined-fishstick/tree/cpsc386-project2-release). The repository's default `main` branch is **not** Relay Yard.
+
 ## Run
 
 Open this repository as a Unity project, let its packages import, then open `Assets/Scenes/MainMenu.unity` and press Play. The three playable scenes are **MainMenu**, **Game**, and **Win**. They must appear in the Build Profiles scene list in that order for a standalone build.
@@ -49,4 +55,4 @@ The source excludes historical scene backups, unused prototype assets, and one-t
 
 See `SUBMISSION.md` for the three deliverables and `TESTING.md` for the remaining release checks. The technical report draft is `docs/PROJECT2_DOCUMENTATION.md`.
 
-**Verification boundary:** Editor gameplay has been reported working; this cleaned release source still needs a Unity import/build check and independent Windows-player test. The final report must include accurate asset credits and disclosure of substantial ChatGPT assistance.
+**Verification boundary:** A Windows build has been reported successful, while its full standalone playthrough and the Web build are not yet recorded as passed. The instructor's syllabus specifies Unity 6 LTS for grading; this project records editor version 6000.6.4f1 and compatibility must be confirmed. The final report must include accurate asset credits, prior instructor consent for third-party work as required by course policy, and disclosure of substantial ChatGPT assistance.

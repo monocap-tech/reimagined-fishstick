@@ -2,6 +2,8 @@
 
 These credits describe material included in the source project. They **do not** grant additional redistribution rights to the user or to third parties.
 
+**Separate course requirement:** The CPSC 386 syllabus requires **prior instructor consent before incorporating third-party code, art, audio, fonts or other assets**, including free assets, and documentation of their origin, copyright and license. That consent has not been confirmed or recorded here. Attribution alone does not satisfy the instructor's consent requirement.
+
 ## Font: DotGothic16 (modified)
 
 - **Original:** DotGothic16, copyright 2020 The DotGothic16 Project Authors

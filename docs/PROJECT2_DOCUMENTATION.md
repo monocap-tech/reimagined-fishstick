@@ -53,6 +53,10 @@ An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The 
 
 **AudioMixer verification pending:** `RelayMixer.mixer` is committed with Music and SFX groups. Confirm both runtime AudioSources use the intended groups in the Unity Editor and Windows player.
 
+### Feature-to-source index (for instructor review)
+
+The eight implemented feature areas are cross-referenced with direct links and a short play walkthrough in [GRADING_GUIDE.md](../GRADING_GUIDE.md). The Player Animator has three primary states (Locomotion, Jump, Fall); its Locomotion motion is the **Idle Walk Run Blend** 1D blend tree. The Game scene's Perlin/noise animation is driven by editable parameters in `SeededSignal.cs`, rather than generating randomized obstacles or the earlier prototype's stars. These are implementation observations, not independent grading results.
+
 ## 5. Testing evidence (complete with observed results)
 
 - Editor version and test date: Unity 6000.6.4f1, November 12, 2026.
@@ -60,19 +64,21 @@ An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The 
 - Gate/goal trigger correction: Reported working after implementing `OnTriggerStay2D` alongside `OnTriggerEnter2D` and restoring gradual gate motion.
 - Cleaned release branch import: **Not yet verified.**
 - AudioMixer group routing: **Not yet verified.**
-- Windows standalone build and full playthrough: **Not yet verified.**
+- Windows Unity build: **Reported successful, November 15, 2026; external launch and full playthrough not yet verified.**
+- WebGL: **Build in progress; browser launch and playthrough not yet verified.**
 - Tested release commit: **To fill in.**
 
 ## 6. Asset sources, attribution and assistance
 
-The project uses Unity and its official packages. Core geometric art and the reset-ring graphic are generated locally. `Assets/Font/DotGothic16-Regular.ttf` is modified from the DotGothic16 project and remains subject to SIL OFL 1.1 (full text in `licenses/DotGothic16-OFL.txt`). Two MusMus music files (`MusMus-BGM-172.ogg` for MainMenu, `MusMus-BGM-134.ogg` for Game/Win) were provided by composer watson under MusMus's BGM-use terms requiring attribution (https://musmus.main.jp/info.html); the site forbids standalone redistribution of the music. Their raw files are currently in the public source and need a distribution review. `AudioDirector` synthesizes jump/plate effects and fallback music at runtime. The puzzle-clear WAV was converted from a supplied recording named **Grasshopper-Manufacture-Jingle.m4a**; its licensing and public redistribution permission remain unverified. See `THIRD_PARTY_NOTICES.md` for the draft notices and remaining obligations.
+The project uses Unity and its official packages. Core geometric art and the reset-ring graphic are generated locally. `Assets/Font/DotGothic16-Regular.ttf` is modified from the DotGothic16 project and remains subject to SIL OFL 1.1 (full text in `licenses/DotGothic16-OFL.txt`). Two MusMus music files (`MusMus-BGM-172.ogg` for MainMenu, `MusMus-BGM-134.ogg` for Game/Win) were provided by composer watson under MusMus's BGM-use terms requiring attribution (https://musmus.main.jp/info.html); the site forbids standalone redistribution of the music. Their raw files are currently in the public source and need a distribution review. `AudioDirector` synthesizes jump/plate effects and fallback music at runtime. The puzzle-clear WAV was converted from a supplied recording named **Grasshopper-Manufacture-Jingle.m4a**; its licensing and public redistribution permission remain unverified. See `THIRD_PARTY_NOTICES.md` for the draft notices and remaining obligations. **Separately from the licenses, the CPSC 386 syllabus requires prior instructor consent to all third-party work**; the project has not recorded whether that consent was obtained.
 
 **AI-assistance disclosure (must be retained and personally reviewed):** ChatGPT was used substantially during design iteration, research, C# scripting, project structuring, troubleshooting, URP migration and UI tooling, acceptance-test planning, and drafting this documentation outline. The author reviewed, integrated, debugged and tested the resulting work in Unity. The final report should identify assistance in the form required by the instructor, and independently explain the author's actual decisions and testing.
 
 ## 7. Submission record
 
 - Source URL and commit: **To fill in.**
-- Built executable folder and ZIP: **To fill in.**
+- Windows executable folder and ZIP (Windows build succeeded; external test unverified): **To fill in.**
+- WebGL ZIP or Unity Play URL (browser build in progress): **To fill in.**
 - Documentation PDF/DOCX: **To fill in.**
 - Platform/build test date: **To fill in.**
 - Peer review / upload confirmation: **To fill in.**
