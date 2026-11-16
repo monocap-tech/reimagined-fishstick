@@ -40,8 +40,8 @@ The source excludes historical scene backups, unused prototype assets, and one-t
 - The six-switch board logic is a pure C# model (`LightsOutBoard`). The MonoBehaviour controller updates visible indicators and unlocks the gate when the model is solved.
 - The gate rises gradually after unlock. Exit eligibility changes immediately at 6/6; `SceneLoader` handles both trigger entry and continued overlap, so a player already standing in the goal can complete the level.
 - The player Light 2D provides spatial illumination to URP-lit surfaces. Gameplay sprites that need constant legibility use appropriate unlit materials.
-- The persistent `AudioDirector` synthesizes background music and basic interaction cues, and can load a replacement puzzle-clear sound from `Assets/Resources/PuzzleClear.wav`. If absent, it falls back to its previous synthesized unlock tone. This cue uses the SFX AudioSource and responds to existing SFX volume/mute controls.
-- `AudioDirector` routes Music and SFX through mixer groups when a compatible `Assets/Resources/RelayMixer.mixer` exists. **The mixer asset is not currently committed and must be checked against the assignment requirements before hand-in.**
+- The persistent `AudioDirector` plays `MusMus-BGM-172.ogg` on **MainMenu**, then `MusMus-BGM-134.ogg` on **Game**. The gameplay track continues through **Win**, and the title track returns on **MainMenu**. Missing BGM assets fall back to a synthesized loop. Jump and plate cues remain synthesized; `Assets/Resources/PuzzleClear.wav` is loaded for the clear cue, with a synthesized fallback. The clear cue uses the SFX AudioSource and responds to SFX volume/mute controls.
+- `Assets/Resources/RelayMixer.mixer` is committed with Music and SFX groups. `AudioDirector` assigns the two sources to their matching groups. This routing still needs a runtime Unity/standalone verification.
 - The puzzle-clear WAV is derived from a user-supplied jingle and is **not yet in the GitHub source**. Check ownership, attribution, and distribution permission before including it in a public repository or submission archive.
 
 ## Submission

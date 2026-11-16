@@ -17,14 +17,15 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 | Best time | Stops at goal, retains fastest success only | Results screenshots; persistence across app restart still needs explicit test |
 | URP lighting | 2D point light falloff, no missing/pink materials | Gameplay screenshots |
 | Release cleanup | No missing scene/script/assets after removal | **NOT TESTED** |
-| AudioMixer groups | Music and SFX mixer groups assigned as required | **NOT TESTED — mixer asset missing from remote** |
+| AudioMixer groups | Music and SFX mixer groups assigned as required | **ASSET PRESENT — runtime routing not yet confirmed** |
+| BGM transitions | MainMenu plays 172; Game plays 134; Win continues 134; returning to MainMenu restores 172 | **NOT TESTED** |
 | Clean Unity import | No compile errors or missing references | **NOT TESTED on release branch** |
 | Standalone Windows build | External launch, full playthrough, audio, restart, win, quit | **NOT TESTED** |
 | Source/disclosure | Complete `.meta` set, source commit, reviewed report and AI citation | **PENDING** |
 
 ## Final manual acceptance sequence
 
-1. Open MainMenu and verify Audio controls and Reset Audio.
+1. Open MainMenu; verify track 172, Audio controls and Reset Audio. Enter Game and verify track 134. Win should continue Game BGM without restarting, and returning to MainMenu should restore track 172.
 2. Play Game; verify all switch interactions, jump, URP lighting and controls. Confirm the imported puzzle-clear jingle plays on 6/6, obeys SFX volume/mute, and is heard through the SFX mixer group once configured.
 3. Enter the exit flag before the final board state where possible. Solve the board while overlapping; verify Win triggers without leaving/re-entering.
 4. Confirm the gate visually rises gradually; no snap.

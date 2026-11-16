@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 namespace RelayYard
 {
@@ -19,6 +20,9 @@ namespace RelayYard
         private AudioClip jumpClip;
         private AudioClip relayClip;
         private AudioClip unlockClip;
+        private AudioClip titleMusicClip;
+        private AudioClip gameplayMusicClip;
+        private AudioClip fallbackMusicClip;
         private float musicVolume = DefaultMusicVolume;
         private float sfxVolume = DefaultSfxVolume;
         private bool musicMuted;
@@ -61,19 +65,19 @@ namespace RelayYard
                 }
             }
 
-            // Music and the interaction cues are generated procedurally.
-            // The puzzle-clear cue is a short user-provided WAV imported at
-            // Assets/Resources/PuzzleClear.wav. Retain an audible fallback until
-            // the clip is installed (for example, in fresh source checkouts).
-            // Prefer the selected MusMus loop imported under Assets/Resources.
-            // Keep the synthesized loop as a safe fallback for source checkouts
-            // that do not include third-party music assets.
-            musicSource.clip = Resources.Load<AudioClip>("MusMus-BGM-134");
-            if (musicSource.clip == null)
+            // Scene-specific music: title screen uses 172; gameplay uses 134.
+            // Win retains the gameplay track without restarting it.
+            // Use an original synthesized fallback if either asset is absent.
+            titleMusicClip = Resources.Load<AudioClip>("MusMus-BGM-172");
+            gameplayMusicClip = Resources.Load<AudioClip>("MusMus-BGM-134");
+            if (titleMusicClip == null || gameplayMusicClip == null)
             {
-                Debug.LogWarning("AudioDirector: MusMus-BGM-134.ogg missing from Assets/Resources; using original synthesized music.");
-                musicSource.clip = CreateMusic();
+                Debug.LogWarning("AudioDirector: one or more MusMus BGM clips are missing from Assets/Resources; using synthesized music for missing tracks.");
+                fallbackMusicClip = CreateMusic();
             }
+
+            // The puzzle-clear cue is a user-provided WAV imported at
+            // Assets/Resources/PuzzleClear.wav, with a synthesized fallback.
             jumpClip = MakeTone("Jump", 0.18f, 420f, 720f);
             relayClip = MakeTone("Relay", 0.28f, 600f, 980f);
             unlockClip = Resources.Load<AudioClip>("PuzzleClear");
@@ -88,6 +92,24 @@ namespace RelayYard
             musicMuted = PlayerPrefs.GetInt(MusicMutedKey, 0) != 0;
             sfxMuted = PlayerPrefs.GetInt(SfxMutedKey, 0) != 0;
             ApplyVolumes();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SelectMusicForScene(SceneManager.GetActiveScene().name);
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            SelectMusicForScene(scene.name);
+        }
+
+        private void SelectMusicForScene(string sceneName)
+        {
+            // Do not interrupt the music at Game -> Win or on a Game restart.
+            AudioClip selected = sceneName == "MainMenu" ? titleMusicClip : gameplayMusicClip;
+            if (selected == null) selected = fallbackMusicClip;
+            if (selected == null || musicSource == null) return;
+            if (musicSource.clip == selected && musicSource.isPlaying) return;
+
+            musicSource.clip = selected;
             musicSource.Play();
         }
 
@@ -209,7 +231,11 @@ namespace RelayYard
 
         private void OnDestroy()
         {
-            if (Instance == this) Instance = null;
+            if (Instance == this)
+            {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+                Instance = null;
+            }
         }
     }
 }
