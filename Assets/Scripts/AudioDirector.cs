@@ -8,7 +8,7 @@ namespace RelayYard
     public sealed class AudioDirector : MonoBehaviour
     {
         public static AudioDirector Instance { get; private set; }
-        public const float DefaultMusicVolume = 0.55f;
+        public const float DefaultMusicVolume = 0.35f;
         public const float DefaultSfxVolume = 0.75f;
         private const string MusicVolumeKey = "RelayYard.MusicVolume";
         private const string SfxVolumeKey = "RelayYard.SfxVolume";
