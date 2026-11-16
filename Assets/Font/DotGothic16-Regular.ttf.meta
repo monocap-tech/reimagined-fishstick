@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bc4b7e21e2d9e4f4b9b0de467e303d5b
+guid: 7211727506a307847b9a1a4e7ccaa028
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - FOT-NewCinemaA Std
+  - DotGothic16
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
