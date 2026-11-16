@@ -40,7 +40,7 @@ Main Menu and Pause both open **Audio** settings with independent Music/SFX volu
 - `Assets/Sprites/`: shared source sprite and the reset-ring graphic.
 - `Assets/Font/`: a modified copy of DotGothic16 under the SIL Open Font License 1.1. See the notices and bundled OFL text.
 
-The source excludes historical scene backups, unused prototype assets, and one-time Editor generation/migration tools. The working development history remains on branch `cpsc386-project2-urp-test`. This release branch contains the working game source and draft documentation; the final build and technical-report deliverables remain unverified.
+The source excludes historical scene backups, unused prototype assets, and one-time Editor generation/migration tools. The working development history remains on branch `cpsc386-project2-urp-test`. The developer has validated both Windows x64 and WebGL builds; build archives and Web hosting links are distributed separately from source Git.
 
 ## Technical notes
 
@@ -53,6 +53,6 @@ The source excludes historical scene backups, unused prototype assets, and one-t
 
 ## Submission
 
-See `SUBMISSION.md` for the three deliverables and `TESTING.md` for the remaining release checks. The technical report draft is `docs/PROJECT2_DOCUMENTATION.md`.
+See `SUBMISSION.md` for the three deliverables and `TESTING.md` for the remaining release checks. The up-to-date six-switch report source is `docs/PROJECT2_DOCUMENTATION.md`; older Word drafts describe an obsolete three-relay prototype and should not be submitted.
 
-**Verification boundary:** A Windows build has been reported successful, while its full standalone playthrough and the Web build are not yet recorded as passed. The instructor's syllabus specifies Unity 6 LTS for grading; this project records editor version 6000.6.4f1 and compatibility must be confirmed. The final report must include accurate asset credits, prior instructor consent for third-party work as required by course policy, and disclosure of substantial ChatGPT assistance.
+**Build verification:** The developer reports both Windows x64 and WebGL builds validated. Exact ZIP filenames, Web hosting URL (if used), the SHA of the game source used to build each package, and a per-test log are not recorded. The validated binaries do not establish that Unity 6000.6.4f1 source opens in the instructor's specified Unity 6 LTS (2024) editor. Course policy requires prior instructor consent for third-party assets; this consent remains undocumented. Substantial ChatGPT assistance and the asset provenance are documented in the project report and notices.

@@ -19,8 +19,8 @@ The modified font remains licensed under SIL OFL 1.1. Do not conflate its licens
 **BGM: MusMus — https://musmus.main.jp/**
 
 - Composer/producer: **watson**
-- `Assets/Resources/MusMus-BGM-172.ogg`: MainMenu BGM
-- `Assets/Resources/MusMus-BGM-134.ogg`: gameplay and Win BGM
+- `Assets/Resources/MusMus-BGM-172.ogg`: MainMenu BGM, used as supplied as an imported OGG
+- `Assets/Resources/MusMus-BGM-134.ogg`: gameplay and Win BGM, used as supplied as an imported OGG
 - Terms: https://musmus.main.jp/info.html
 - Track titles/individual catalog URLs: **not independently confirmed; identify before the final report**.
 
@@ -30,7 +30,7 @@ MusMus allows its tracks to be used as background music in games with attributio
 
 - `Assets/Resources/PuzzleClear.wav` was converted from the supplied `Grasshopper-Manufacture-Jingle.m4a`.
 - The copyright holder, source, license and distribution permission have **not** been established.
-- The recording is included in the current public repository. Do not claim the file is freely licensed. Replace it with a clearly licensed or original sound if redistribution permission cannot be established.
+- The M4A recording was converted to WAV for the puzzle-completion cue and is included in the public source repository. Do not claim the file is freely licensed. Replace it with a clearly licensed or original sound if redistribution permission cannot be established.
 
 ## Credits and source disclosure
 

@@ -4,7 +4,7 @@
 **Source branch:** [cpsc386-project2-release](https://github.com/monocap-tech/reimagined-fishstick/tree/cpsc386-project2-release)  
 **Project editor version:** Unity **6000.6.4f1** (recorded in [ProjectSettings/ProjectVersion.txt](ProjectSettings/ProjectVersion.txt)).
 
-> **Build status:** A Windows build has been reported successful, but launch and a full run outside Unity still need to be recorded. WebGL is in progress. The course syllabus calls for Unity 6 LTS; verify compatibility with the instructor's exact grading editor version before relying on the source project alone.
+> **Build status:** Windows x64 and WebGL builds are developer-validated. Exact artifact names, optional hosted URL and per-case test evidence are pending in the submission record. Unity 6000.6.4f1 source compatibility with the instructor's Unity 6 LTS environment is not yet established.
 
 ## Open and play
 
@@ -50,4 +50,4 @@ This is an implementation index, not a claim that the game has been independentl
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists imported music, font, sound and license sources. **Course policy separately requires prior instructor consent to third-party assets, including free assets. Consent has not been documented here.**
 - The final personally reviewed report must identify substantial ChatGPT assistance in design, coding, troubleshooting, testing support and documentation.
 
-**Submitted build URL, archive name, source commit SHA, tested platform, and course approval status must be filled in with actual evidence before final submission.**
+**Still to record before submission:** verified ZIP names or Web URL, source commit used for both builds, platform specifics, and instructor approval for third-party material. The current six-switch report supersedes old three-relay Word drafts.

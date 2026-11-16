@@ -1,6 +1,6 @@
 # Relay Yard — release verification
 
-Do not mark a test as passed unless it was observed in the relevant environment. The user reported the finished URP puzzle and UI **functionally working in the Unity Editor on November 12, 2026**. This does not prove a clean release import or standalone build.
+**Evidence boundary:** The developer reports both Windows x64 and WebGL builds **validated**. This platform-level report is not an individual pass record for every test below. Exact browser/OS versions, build ZIP names, hosted URL, build-source SHA and per-test logs have not been supplied.
 
 | Area | Required behavior | Current evidence |
 |---|---|---|
@@ -20,12 +20,14 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 | AudioMixer groups | Music and SFX mixer groups assigned as required | **ASSET PRESENT — runtime routing not yet confirmed** |
 | BGM transitions | MainMenu plays 172; Game plays 134; Win continues 134; returning to MainMenu restores 172 | **Reported working in Unity Editor on November 15, 2026; standalone test pending** |
 | Clean Unity import | No compile errors or missing references | **NOT TESTED on release branch** |
-| Windows build compilation | Unity Windows build process completes | **Reported successful by developer, November 15, 2026** |
-| Standalone Windows run | External launch, full playthrough, audio, restart, win, quit | **NOT YET REPORTED** |
-| WebGL build/browser run | Build completes, starts through HTTP or hosted URL, audio unlocks after user input, gameplay and UI work | **BUILD IN PROGRESS; not yet reported passed** |
+| Windows x64 build | Build created and validated by developer | **PASS — reported by developer; detailed test log not provided** |
+| WebGL build | Browser build created and validated by developer | **PASS — reported by developer; browser/version and hosted URL not provided** |
+| Individual cross-platform regression | Confirm all puzzle, reset, pause, audio, UI, and persistence cases on both platforms | **NOT RECORDED AT CASE LEVEL** |
 | Source/disclosure | Complete `.meta` set, source commit, reviewed report, third-party credits and AI citation | **Meta audit passed; notices drafted; report pending** |
 
 ## Final manual acceptance sequence
+
+Record individual test outcomes here when available; platform-level validation alone does not establish a pass for each acceptance case.
 
 1. Open MainMenu; verify track 172, Audio controls and Reset Audio. Enter Game and verify track 134. Win should continue Game BGM without restarting, and returning to MainMenu should restore track 172.
 2. Play Game; verify all switch interactions, jump, URP lighting and controls. Confirm the imported puzzle-clear jingle plays on 6/6, obeys SFX volume/mute, and is heard through the SFX mixer group once configured.
@@ -41,10 +43,10 @@ Do not mark a test as passed unless it was observed in the relevant environment.
 ## Delivery evidence
 
 - Unity version: **6000.6.4f1**.
-- Tested release source commit: **PENDING**.
-- Clean release import result: **PENDING**.
+- Tested release source commit: **PENDING — record the SHA used for the binaries, not a subsequent docs-only commit**.
+- Source import into the grader's Unity 6 LTS version: **NOT VERIFIED**.
 - AudioMixer verification: **PENDING**.
-- Windows Unity build: **Reported successful; standalone-player test and ZIP name pending**.
-- WebGL browser build: **In progress; completion/URL pending**.
-- Standalone build folder/ZIP: **PENDING**.
+- Windows x64 build: **developer-reported validated; ZIP name, build SHA, and per-test log outstanding**.
+- WebGL build: **developer-reported validated; browser version, ZIP/URL, and per-test log outstanding**.
+- Build archives/hosted URL: **NOT YET RECORDED**.
 - Report PDF/DOCX: **PENDING**.

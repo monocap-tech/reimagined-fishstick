@@ -1,8 +1,8 @@
-# Relay Yard — Project 2 technical report (review draft)
+# Relay Yard — Project 2 technical report (current six-switch revision)
 
 **Course:** CPSC 386, Fall 2026  
 **Engine:** Unity 6.6 (6000.6.4f1), URP 2D Renderer  
-**Status:** Source-based technical draft. Review and personalize before DOCX/PDF submission; complete testing blanks with actual evidence.
+**Status:** Reflects the shipped six-switch game and the developer's validation of both Windows x64 and WebGL builds. Personal review and actual build ZIP names, Web URL, build-source SHA and instructor-consent record are required before handing in.
 
 ## 1. Project overview and design
 
@@ -57,18 +57,26 @@ An Escape-driven pause panel provides Resume, Restart, Audio and Main Menu. The 
 
 The eight implemented feature areas are cross-referenced with direct links and a short play walkthrough in [GRADING_GUIDE.md](../GRADING_GUIDE.md). The Player Animator has three primary states (Locomotion, Jump, Fall); its Locomotion motion is the **Idle Walk Run Blend** 1D blend tree. The Game scene's Perlin/noise animation is driven by editable parameters in `SeededSignal.cs`, rather than generating randomized obstacles or the earlier prototype's stars. These are implementation observations, not independent grading results.
 
-## 5. Testing evidence (complete with observed results)
+## 5. Build and testing evidence
+
+**Developer-confirmed results:** Windows x64 and WebGL builds were both validated. This is a platform-level report; detailed browser/OS versions, archive names, hosted Web URL, exact source commit for each build, and individual acceptance outcomes have not been supplied. See `TESTING.md` for the acceptance checklist.
+
+**Editor-version caveat:** `ProjectSettings/ProjectVersion.txt` records Unity **6000.6.4f1**. The CPSC 386 syllabus specifies Unity **6 LTS (2024)** for grading. Success of the binaries does not prove that the source project can be imported into that editor version.
+
+### Test evidence retained
 
 - Editor version and test date: Unity 6000.6.4f1, November 12, 2026.
 - Editor gameplay/UI: Reported working; screenshots show menu, game HUD, pause/audio and result displays.
 - Gate/goal trigger correction: Reported working after implementing `OnTriggerStay2D` alongside `OnTriggerEnter2D` and restoring gradual gate motion.
 - Cleaned release branch import: **Not yet verified.**
 - AudioMixer group routing: **Not yet verified.**
-- Windows Unity build: **Reported successful, November 15, 2026; external launch and full playthrough not yet verified.**
-- WebGL: **Build in progress; browser launch and playthrough not yet verified.**
+- Windows x64 build: **developer-reported validated**; exact ZIP name, source SHA and per-case test report not yet supplied.
+- WebGL build: **developer-reported validated**; exact browser, package or URL and per-case test report not yet supplied.
 - Tested release commit: **To fill in.**
 
 ## 6. Asset sources, attribution and assistance
+
+**Academic consent:** The syllabus requires prior instructor consent to third-party work, independent of whether its copyright license allows game use. Whether that consent was obtained for the external font and audio files has not been documented in the available source.
 
 The project uses Unity and its official packages. Core geometric art and the reset-ring graphic are generated locally. `Assets/Font/DotGothic16-Regular.ttf` is modified from the DotGothic16 project and remains subject to SIL OFL 1.1 (full text in `licenses/DotGothic16-OFL.txt`). Two MusMus music files (`MusMus-BGM-172.ogg` for MainMenu, `MusMus-BGM-134.ogg` for Game/Win) were provided by composer watson under MusMus's BGM-use terms requiring attribution (https://musmus.main.jp/info.html); the site forbids standalone redistribution of the music. Their raw files are currently in the public source and need a distribution review. `AudioDirector` synthesizes jump/plate effects and fallback music at runtime. The puzzle-clear WAV was converted from a supplied recording named **Grasshopper-Manufacture-Jingle.m4a**; its licensing and public redistribution permission remain unverified. See `THIRD_PARTY_NOTICES.md` for the draft notices and remaining obligations. **Separately from the licenses, the CPSC 386 syllabus requires prior instructor consent to all third-party work**; the project has not recorded whether that consent was obtained.
 
@@ -77,8 +85,9 @@ The project uses Unity and its official packages. Core geometric art and the res
 ## 7. Submission record
 
 - Source URL and commit: **To fill in.**
-- Windows executable folder and ZIP (Windows build succeeded; external test unverified): **To fill in.**
-- WebGL ZIP or Unity Play URL (browser build in progress): **To fill in.**
+- Validated Windows x64 archive and actual build-source commit: **To fill in.**
+- Validated WebGL archive or Unity Play URL and tested browser: **To fill in.**
 - Documentation PDF/DOCX: **To fill in.**
 - Platform/build test date: **To fill in.**
+- Third-party instructor consent record: **To fill in.**
 - Peer review / upload confirmation: **To fill in.**
