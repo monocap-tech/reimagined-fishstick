@@ -65,7 +65,15 @@ namespace RelayYard
             // The puzzle-clear cue is a short user-provided WAV imported at
             // Assets/Resources/PuzzleClear.wav. Retain an audible fallback until
             // the clip is installed (for example, in fresh source checkouts).
-            musicSource.clip = CreateMusic();
+            // Prefer the selected MusMus loop imported under Assets/Resources.
+            // Keep the synthesized loop as a safe fallback for source checkouts
+            // that do not include third-party music assets.
+            musicSource.clip = Resources.Load<AudioClip>("MusMus-BGM-134");
+            if (musicSource.clip == null)
+            {
+                Debug.LogWarning("AudioDirector: MusMus-BGM-134.ogg missing from Assets/Resources; using original synthesized music.");
+                musicSource.clip = CreateMusic();
+            }
             jumpClip = MakeTone("Jump", 0.18f, 420f, 720f);
             relayClip = MakeTone("Relay", 0.28f, 600f, 980f);
             unlockClip = Resources.Load<AudioClip>("PuzzleClear");
